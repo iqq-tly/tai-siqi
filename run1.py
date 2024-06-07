@@ -1,5 +1,5 @@
 from kan import LBFGS
-from efficient_kan import kan
+from efficient_kan import KAN
 import torch
 import matplotlib.pyplot as plt
 from torch import autograd
@@ -301,12 +301,11 @@ outputs_b = outputs_b.reshape(-1,).to(device)
 
 
 
-# #
-model1 = kan(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model2 = kan(width=[3,2,1], grid=5, k=3,grid_eps=1.0, noise_scale_base=0.1).to(device)
-model3 = kan(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model4 = kan(width=[100,2,2], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model5 = kan(width=[2,2,2], grid=5,k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
+model1 =KAN([3, 2, 1], base_activation=nn.Identity)
+model2 = KAN([3, 2, 1], base_activation=nn.Identity)
+model3 = KAN([3, 2, 1], base_activation=nn.Identity)
+model4 = KAN([100, 2, 2], base_activation=nn.Identity)
+model5 = kan([2, 2, 2], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
