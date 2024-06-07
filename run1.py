@@ -49,6 +49,8 @@ class PI_DeepONet:
         print(BC1.device)
         BC2=self.model2(u2)
         BC3 = self.model3(u3)
+        BC2= BC2.to(device)
+        BC2= BC2.to(device)
         B=BC1*BC2*BC3
         return B
 
@@ -66,7 +68,7 @@ class PI_DeepONet:
         B1=self.brunk_net(u1,u2,u3)
         B1= (B1.view(1, -1)).repeat(n, 1).float().to(device)
         B = self.model4(B1)
-        y = self.helper(x, t)
+        y = self.helper(x, t).to(device)
         T = self.model5(y)
         outputs =torch.sum(B * T, dim=1)
         return outputs
