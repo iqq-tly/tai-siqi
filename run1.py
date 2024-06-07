@@ -152,8 +152,8 @@ class PI_DeepONet:
                 pbar.set_description("pde loss: %.2e | bc loss1: %.2e" % (
                 pde_loss.detach().cpu().numpy(), bc_loss.detach().cpu().numpy()))
 
-            self.pde_losses.append(pde_loss.detach().numpy())
-            self.bc_losses.append(bc_loss.detach().numpy())
+            self.pde_losses.append(pde_loss.detach().cpu().numpy())
+            self.bc_losses.append(bc_loss.detach().cpu().numpy())
 
 
 
