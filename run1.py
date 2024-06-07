@@ -306,7 +306,7 @@ model1 =KAN([3, 2, 1], base_activation=nn.Identity)
 model2 = KAN([3, 2, 1], base_activation=nn.Identity)
 model3 = KAN([3, 2, 1], base_activation=nn.Identity)
 model4 = KAN([100, 2, 2], base_activation=nn.Identity)
-model5 = kan([2, 2, 2], base_activation=nn.Identity)
+model5 = KAN([2, 2, 2], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
