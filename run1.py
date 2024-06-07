@@ -301,9 +301,9 @@ outputs_b = outputs_b.reshape(-1,).to(device)
 
 
 
-model1 =KAN([3, 2, 1], base_activation=nn.Identity)
-model2 = KAN([3, 2, 1], base_activation=nn.Identity)
-model3 = KAN([3, 2, 1], base_activation=nn.Identity)
+model1 =KAN([3, 5, 1], base_activation=nn.Identity)
+model2 = KAN([3, 5, 1], base_activation=nn.Identity)
+model3 = KAN([3, 5, 1], base_activation=nn.Identity)
 model4 = KAN([100, 5, 5], base_activation=nn.Identity)
 model5 = KAN([2, 5, 5], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
