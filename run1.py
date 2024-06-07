@@ -1,6 +1,7 @@
 from kan import LBFGS
 from efficient_kan import KAN
 import torch
+import torch.nn as nn
 import matplotlib.pyplot as plt
 from torch import autograd
 from tqdm import tqdm
