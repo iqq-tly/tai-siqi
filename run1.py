@@ -1,4 +1,5 @@
-from kan import KAN, LBFGS
+from kan import LBFGS
+from efficient_kan import kan
 import torch
 import matplotlib.pyplot as plt
 from torch import autograd
