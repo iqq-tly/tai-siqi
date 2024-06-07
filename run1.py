@@ -99,6 +99,15 @@ class PI_DeepONet:
 
 
     def train(self,u1,u2,u3,x_i, t_i,outputs_i,x_b, t_b, outputs_b):
+        u1 = u1.to(device)
+        u2 = u2.to(device)
+        u3 = u3.to(device)
+        x_i = x_i.to(device)
+        t_i = t_i.to(device)
+        outputs_i = outputs_i.to(device)
+        x_b = x_b.to(device)
+        t_b = t_b.to(device)
+        outputs_b = outputs_b.to(device)
 
         params1 = tuple(model1.parameters())
         params2 = tuple(model2.parameters())
