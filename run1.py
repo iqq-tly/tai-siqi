@@ -128,7 +128,7 @@ class PI_DeepONet:
         self.optimizer = LBFGS(params, lr=1, history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
         pbar = tqdm(range(20), desc='description')
-        scaler = GradScaler()
+       
         for _ in pbar:
 
             def closure():
@@ -146,8 +146,7 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_b1)
                 # model1.update_grid_from_samples(u_b2)
             self.optimizer.step(closure)
-            scaler.update()
-
+          
 
             if _ % 1 == 0:
                 pbar.set_description("pde loss: %.2e | bc loss1: %.2e" % (
