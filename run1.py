@@ -127,7 +127,7 @@ class PI_DeepONet:
 
         self.optimizer = LBFGS(params, lr=1, history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
-        pbar = tqdm(range(20), desc='description')
+        pbar = tqdm(range(300), desc='description')
        
         for _ in pbar:
 
