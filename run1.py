@@ -45,6 +45,7 @@ class PI_DeepONet:
         return reshaped_X
     def brunk_net(self,u1,u2,u3):
         BC1=self.model1(u1)
+        BC1= BC1.to(device)
         print(BC1.device)
         BC2=self.model2(u2)
         BC3 = self.model3(u3)
