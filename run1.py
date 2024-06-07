@@ -20,6 +20,7 @@ import pandas as pd
 from torch.cuda.amp import GradScaler
 import time
 from functorch import make_functional, vmap, jacrev, hessian
+torch.func.jacrev
 start_time=time.time()
 device = torch.device("cuda")
 class PI_DeepONet:
@@ -125,7 +126,7 @@ class PI_DeepONet:
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = LBFGS(params, lr=1, history_size=10, line_search_fn="strong_wolfe",
+        self.optimizer = LBFGS(params, lr=5, history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
         pbar = tqdm(range(300), desc='description')
        
