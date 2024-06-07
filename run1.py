@@ -280,12 +280,13 @@ outputs_i=outputs_i.float().to(device)
 x_b=x_b.float().to(device)
 t_b=t_b.float().to(device)
 outputs_b=outputs_b.float().to(device)
-x_i=x_i.reshape(-1,)
-t_i=t_i.reshape(-1,)
-outputs_i=outputs_i.reshape(-1,)
-x_b=x_b.reshape(-1,)
-t_b=t_b.reshape(-1,)
-outputs_b=outputs_b.reshape(-1,)
+x_i = x_i.reshape(-1,).to(device)
+t_i = t_i.reshape(-1,).to(device)
+outputs_i = outputs_i.reshape(-1,).to(device)
+x_b = x_b.reshape(-1,).to(device)
+t_b = t_b.reshape(-1,).to(device)
+outputs_b = outputs_b.reshape(-1,).to(device)
+
 
 
 # #
