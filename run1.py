@@ -326,7 +326,7 @@ t_test=min_max_normalize(t_test,t_bcs_min_value,t_bcs_max_value)
 s_pred = model.operator_net(u_1,u_2,u_3,x_test,t_test)
 s_pred=s_pred*s_bcs_max_value
 s_true=data.iloc[:,3]
-s_true=torch.tensor(s_true)
+s_true=torch.tensor(s_true).to(device)
 error_s =(s_pred- s_true)/s_true
 print('s_pred:\n',s_pred)
 print('s_true:\n',s_true)
