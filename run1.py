@@ -302,11 +302,11 @@ outputs_b = outputs_b.reshape(-1,).to(device)
 
 
 # #
-model1 = KAN(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model2 = KAN(width=[3,2,1], grid=5, k=3,grid_eps=1.0, noise_scale_base=0.1).to(device)
-model3 = KAN(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model4 = KAN(width=[100,2,2], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
-model5 = KAN(width=[2,2,2], grid=5,k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
+model1 = kan(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
+model2 = kan(width=[3,2,1], grid=5, k=3,grid_eps=1.0, noise_scale_base=0.1).to(device)
+model3 = kan(width=[3,2,1], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
+model4 = kan(width=[100,2,2], grid=5, k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
+model5 = kan(width=[2,2,2], grid=5,k=3, grid_eps=1.0, noise_scale_base=0.1).to(device)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
