@@ -52,7 +52,7 @@ class PI_DeepONet:
         BC3 = self.model3(u3)
         BC2= BC2.to(device)
         BC2= BC2.to(device)
-        B=BC1*BC2*BC3
+        B=(BC1*BC2*BC3).to(device)
         return B
 
 
