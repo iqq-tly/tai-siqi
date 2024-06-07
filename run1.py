@@ -19,10 +19,6 @@ from torch.cuda.amp import GradScaler
 import time
 from functorch import make_functional, vmap, jacrev, hessian
 start_time=time.time()
-if torch.cuda.is_available():
-    device = torch.device("cuda")
-else:
-    device = torch.device("cpu")
 class PI_DeepONet:
     def __init__(self,model1,model2,model3,model4,model5):
         # Network initialization and evaluation functions
