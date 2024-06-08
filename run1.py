@@ -147,6 +147,7 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_b1)
                 # model1.update_grid_from_samples(u_b2)
             self.optimizer.step(closure)
+             torch.cuda.empty_cache()
           
 
             if _ % 1 == 0:
