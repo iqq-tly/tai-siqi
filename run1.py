@@ -278,7 +278,7 @@ def generate_one_training_data(key,P,Q,K):
 key = random.PRNGKey(0)
 
 K=2.411
-P =600 # number of output sensors, 100 for each side
+P =450 # number of output sensors, 100 for each side
 Q =200  # number of collocation points for each input sample
 u_1,u_2,u_3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
@@ -305,7 +305,7 @@ outputs_b = outputs_b.reshape(-1,).to(device)
 model1 =KAN([3, 5, 1], base_activation=nn.Identity)
 model2 = KAN([3, 5, 1], base_activation=nn.Identity)
 model3 = KAN([3, 5, 1], base_activation=nn.Identity)
-model4 = KAN([200, 5, 5], base_activation=nn.Identity)
+model4 = KAN([150, 5, 5], base_activation=nn.Identity)
 model5 = KAN([2, 5, 5], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
