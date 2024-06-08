@@ -126,7 +126,7 @@ class PI_DeepONet:
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = LBFGS(params, lr=1, history_size=10, line_search_fn="strong_wolfe",
+        self.optimizer = LBFGS(params, lr=5, history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
         pbar = tqdm(range(300), desc='description')
        
@@ -137,7 +137,7 @@ class PI_DeepONet:
                 self.optimizer.zero_grad()
                 bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                 pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                loss =0.01*pde_loss+bc_loss
+                loss =pde_loss+50*bc_loss
                 loss.backward()
                 return loss
 
