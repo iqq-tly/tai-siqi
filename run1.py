@@ -119,7 +119,7 @@ class PI_DeepONet:
         pbar = tqdm(range(200), desc='description')
        
         for _ in pbar:
-            start_time = time.time()
+
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 x_i=x_i.to(device)
                 t_i=t_i.to(device)
@@ -142,8 +142,7 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_b1)
                 # model1.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
-            end_time = time.time()
-            print(end_time - start_time)
+       
            
 
             if _ % 1 == 0:
