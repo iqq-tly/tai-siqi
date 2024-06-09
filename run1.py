@@ -120,7 +120,9 @@ class PI_DeepONet:
         pbar = tqdm(range(300), desc='description')
        
         for _ in pbar:
+            start_time = time.time()
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
+                print(f"Epoch {epoch}, Batch {batch_idx}")
                 x_i=x_i.to(device)
                 t_i=t_i.to(device)
                 outputs_i=outputs_i.to(device)
@@ -142,7 +144,9 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_b1)
                 # model1.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
-         
+            end_time = time.time()
+            print(f"Epoch {epoch} time: {end_time - start_time:.2f}s")
+           
 
             if _ % 1 == 0:
                 pbar.set_description("pde loss: %.2e | bc loss1: %.2e" % (
@@ -296,8 +300,8 @@ t_b = t_b.reshape(-1,)
 outputs_b = outputs_b.reshape(-1,)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
-batch_size1= 45
-batch_size2= 20
+batch_size1= 90
+batch_size2= 40
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
