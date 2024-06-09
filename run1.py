@@ -313,9 +313,9 @@ model5 = KAN([2, 5, 5], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.brunk_net(u_1,u_2,u_3,dataloader1,dataloader2)
+
  # Train the PI_DeepONet model
-model.train(u_1,u_2,u_3,dataloader)
+model.train(u_1,u_2,u_3,dataloader1,dataloader2)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
