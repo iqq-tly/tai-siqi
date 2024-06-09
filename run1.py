@@ -8,7 +8,6 @@ from tqdm import tqdm
 import jax
 import torch
 import numpy as np
-# import jax.numpy as jnp
 from jax import random, jit
 import sklearn
 from sklearn.preprocessing import MinMaxScaler
@@ -17,7 +16,7 @@ from functools import partial
 from torch.utils import data
 from tqdm import trange, tqdm
 import pandas as pd
-from torch.cuda.amp import GradScaler
+from torch.utils.data import DataLoader, TensorDataset
 import time
 from functorch import make_functional, vmap, jacrev, hessian
 start_time=time.time()
@@ -105,7 +104,7 @@ class PI_DeepONet:
 
 
 
-    def train(self,u1,u2,u3,x_i, t_i,outputs_i,x_b, t_b, outputs_b):
+    def train(dataloader):
         u1 = u1.to(device)
         u2 = u2.to(device)
         u3 = u3.to(device)
@@ -130,15 +129,17 @@ class PI_DeepONet:
         pbar = tqdm(range(300), desc='description')
        
         for _ in pbar:
+            for batch in dataloader:
+                x_i,t_i,outputs_i,x_b,t_b,outputs_b= batch
 
-            def closure():
-                global pde_loss, bc_loss
-                self.optimizer.zero_grad()
-                bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
-                pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                loss =pde_loss+50*bc_loss
-                loss.backward()
-                return loss
+                def closure():
+                    global pde_loss, bc_loss
+                    self.optimizer.zero_grad()
+                    bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
+                    pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
+                    loss =pde_loss+50*bc_loss
+                    loss.backward()
+                    return loss
 
             # if _ % 5 == 0 and _ < 50:
                 # model1.update_grid_from_samples(u_i1)
@@ -298,6 +299,9 @@ outputs_i = outputs_i.reshape(-1,).to(device)
 x_b = x_b.reshape(-1,).to(device)
 t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
+dataset = TensorDataset(x_i,t_i,outputs_i,x_b,t_b,outputs_b)
+batch_size = 10
+dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
 
 
@@ -309,9 +313,9 @@ model5 = KAN([2, 5, 5], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.brunk_net(u_1,u_2,u_3)
+model.brunk_net(u_1,u_2,u_3,dataloader)
  # Train the PI_DeepONet model
-model.train(u_1,u_2,u_3,x_i, t_i,outputs_i,x_b, t_b, outputs_b)
+model.train(u_1,u_2,u_3,dataloader)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
