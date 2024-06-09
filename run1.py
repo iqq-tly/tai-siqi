@@ -129,7 +129,7 @@ class PI_DeepONet:
         pbar = tqdm(range(300), desc='description')
        
         for _ in pbar:
-            for (u1,u2,u3,x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
+            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 def closure():
                     global pde_loss, bc_loss
                     self.optimizer.zero_grad()
