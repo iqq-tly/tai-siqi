@@ -104,7 +104,7 @@ class PI_DeepONet:
 
 
 
-    def train(dataloader):
+    def train(self,u1,u2,u3,dataloader1,dataloader2):
         u1 = u1.to(device)
         u2 = u2.to(device)
         u3 = u3.to(device)
@@ -129,9 +129,7 @@ class PI_DeepONet:
         pbar = tqdm(range(300), desc='description')
        
         for _ in pbar:
-            for batch in dataloader:
-                x_i,t_i,outputs_i,x_b,t_b,outputs_b= batch
-
+            for (u1,u2,u3,x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 def closure():
                     global pde_loss, bc_loss
                     self.optimizer.zero_grad()
@@ -146,7 +144,7 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_i2)
                 # model1.update_grid_from_samples(u_b1)
                 # model1.update_grid_from_samples(u_b2)
-            self.optimizer.step(closure)
+                self.optimizer.step(closure)
          
 
             if _ % 1 == 0:
@@ -299,9 +297,11 @@ outputs_i = outputs_i.reshape(-1,).to(device)
 x_b = x_b.reshape(-1,).to(device)
 t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
-dataset = TensorDataset(x_i,t_i,outputs_i,x_b,t_b,outputs_b)
+dataset1 = TensorDataset(x_i,t_i,outputs_i)
+dataset2 = TensorDataset(x_b,t_b,outputs_b)
 batch_size = 10
-dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+dataloader1 = DataLoader(dataset1, batch_size=batch_size, shuffle=True)
+dataloader2 = DataLoader(dataset2, batch_size=batch_size, shuffle=True)
 
 
 
@@ -313,7 +313,7 @@ model5 = KAN([2, 5, 5], base_activation=nn.Identity)
     # Create an instance of the PI_DeepONet class with th e KAN model
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.brunk_net(u_1,u_2,u_3,dataloader)
+model.brunk_net(u_1,u_2,u_3,dataloader1,dataloader2)
  # Train the PI_DeepONet model
 model.train(u_1,u_2,u_3,dataloader)
 data=pd.read_csv('data.csv')
