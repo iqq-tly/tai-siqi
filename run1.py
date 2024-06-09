@@ -144,7 +144,7 @@ class PI_DeepONet:
                 # model1.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
             end_time = time.time()
-            print(f"Epoch {_} time: {end_time - start_time:.2f}s")
+            print(f"Epoch time: {end_time - start_time:.2f}s")
            
 
             if _ % 1 == 0:
