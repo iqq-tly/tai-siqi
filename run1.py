@@ -20,7 +20,6 @@ import pandas as pd
 from torch.cuda.amp import GradScaler
 import time
 from functorch import make_functional, vmap, jacrev, hessian
-torch.func.jacrev
 start_time=time.time()
 device = torch.device("cuda")
 class PI_DeepONet:
