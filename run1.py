@@ -117,9 +117,13 @@ class PI_DeepONet:
         self.optimizer = LBFGS(params, lr=0.1, history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
         pbar = tqdm(range(200), desc='description')
+        u1=u1.to(device)
+        u2=u2.to(device)
+        u3=u3.to(device)
        
         for _ in pbar:
-
+           
+            
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 x_i=x_i.to(device)
                 t_i=t_i.to(device)
