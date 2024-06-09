@@ -121,7 +121,7 @@ class PI_DeepONet:
         for _ in pbar:
             start_time = time.time()
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
-                print(f"Epoch {epoch}, Batch {batch_idx}")
+                print(f"Batch {batch_idx}")
                 x_i=x_i.to(device)
                 t_i=t_i.to(device)
                 outputs_i=outputs_i.to(device)
