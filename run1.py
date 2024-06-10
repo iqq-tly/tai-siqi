@@ -1,18 +1,16 @@
 from kan import LBFGS
 from efficient_kan import KAN
 import torch
+import torch.nn as nn
 import matplotlib.pyplot as plt
-from torch import autograd
 from tqdm import tqdm
 import jax
-import torch
 import numpy as np
 from jax import random, jit
 import sklearn
 from sklearn.preprocessing import MinMaxScaler
 import itertools
 from functools import partial
-from torch.utils import data
 from tqdm import trange, tqdm
 import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
