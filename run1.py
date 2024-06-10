@@ -29,25 +29,13 @@ class PI_DeepONet:
 
         self. bc_losses = []
         self. pde_losses = []
-
-    def to(self, device):
-        self.model1.to(device)
-        self.model2.to(device)
-        self.model3.to(device)
-        self.model4.to(device)
-        self.model5.to(device)
-        # self.model4.to(device)
     def reshape(self,X):
         reshaped_X = X.reshape(-1,)
         return reshaped_X
     def brunk_net(self,u1,u2,u3):
-        u1 = u1.to(device)
         BC1=self.model1(u1)
-        BC1= BC1.to(device)
         BC2=self.model2(u2)
         BC3 = self.model3(u3)
-        BC2= BC2.to(device)
-        BC3= BC3.to(device)
         B=BC1*BC2*BC3
         return B
 
@@ -63,9 +51,9 @@ class PI_DeepONet:
     def operator_net(self,u1,u2,u3,x,t):
         n=len(x)
         B1=self.brunk_net(u1,u2,u3)
-        B1= (B1.view(1, -1)).repeat(n, 1).float().to(device)
+        B1= (B1.view(1, -1)).repeat(n, 1).float()
         B = self.model4(B1)
-        y = self.helper(x, t).to(device)
+        y = self.helper(x, t)
         T = self.model5(y)
         outputs =torch.sum(B * T, dim=1)
         return outputs
@@ -83,10 +71,8 @@ class PI_DeepONet:
 
     # Define boundary loss
     def loss_bcs(self,u1,u2, u3,x, t, output):
-        u1, u2, u3, x, t, output = u1.to(device), u2.to(device), u3.to(device), x.to(device), t.to(device), output.to(device)
         # Compute forward pass
         s_pred = self.operator_net(u1,u2,u3,x,t)
-        s_pred.to(device)
         # Compute loss
         loss = torch.mean((output.flatten() - s_pred) ** 2)
         return loss
@@ -94,10 +80,8 @@ class PI_DeepONet:
 
     # Define residual loss
     def loss_res(self,u1,u2,u3,x, t, output):
-        u1, u2, u3, x, t, output = u1.to(device), u2.to(device), u3.to(device), x.to(device), t.to(device), output.to(device)
         # Compute forward pass
         pred = self.residual_net(u1,u2,u3,x,t)
-        pred.to(device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
 
@@ -115,20 +99,11 @@ class PI_DeepONet:
 
         self.optimizer = torch.optim.LBFGS(params, lr=1)
         pbar = tqdm(range(200), desc='description')
-        u1=u1.to(device)
-        u2=u2.to(device)
-        u3=u3.to(device)
        
         for _ in pbar:
            
             
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
-                x_i=x_i.to(device)
-                t_i=t_i.to(device)
-                outputs_i=outputs_i.to(device)
-                x_b=x_b.to(device)
-                t_b=t_b.to(device)
-                outputs_b=outputs_b.to(device)
                 def closure():
                     global pde_loss, bc_loss
                     self.optimizer.zero_grad()
