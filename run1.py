@@ -14,7 +14,7 @@ from tqdm import trange, tqdm
 import pandas as pd
 from torch.utils.data import DataLoader, TensorDataset
 import time
-from functorch import make_functional, vmap, jacrev, hessian
+from torch.func import jacrev, hessian
 start_time=time.time()
 device = torch.device("cuda")
 class PI_DeepONet:
