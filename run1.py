@@ -19,9 +19,10 @@ start_time=time.time()
 device = torch.device("cuda")
 class PI_DeepONet(nn.Module):
     def __init__(self,model1,model2,model3,model4,model5):
+        super(PI_DeepONet, self).__init__()
         # Network initialization and evaluation functions
         self.model1 = model1
-        self.model2=model2
+        self.model2 = model2
         self.model3 = model3
         self.model4 = model4
         self.model5 = model5
