@@ -102,7 +102,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=10)
+        self.optimizer = torch.optim.LBFGS(params, lr=0.0001)
         pbar = tqdm(range(20), desc='description')
        
         for _ in pbar:
