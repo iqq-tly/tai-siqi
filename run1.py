@@ -1,4 +1,3 @@
-from kan import LBFGS
 from efficient_kan import KAN
 import torch
 import torch.nn as nn
@@ -111,8 +110,7 @@ class PI_DeepONet:
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = LBFGS(params, lr=1, history_size=10, line_search_fn="strong_wolfe",
-                               tolerance_grad=1e-32, tolerance_change=1e-32, tolerance_ys=1e-32)
+        self.optimizer = torch.optim.LBFGS(params, lr=1)
         pbar = tqdm(range(200), desc='description')
         u1=u1.to(device)
         u2=u2.to(device)
