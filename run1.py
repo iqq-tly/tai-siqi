@@ -102,7 +102,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=0.00001)
+        self.optimizer = torch.optim.LBFGS(params, lr=0.0009)
         pbar = tqdm(range(20), desc='description')
        
         for _ in pbar:
@@ -114,7 +114,7 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =pde_loss+bc_loss
+                    loss =pde_loss+100*bc_loss
                     loss.backward()
                     return loss
 
