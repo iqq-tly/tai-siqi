@@ -104,7 +104,7 @@ class PI_DeepONet(nn.Module):
 
         self.optimizer = torch.optim.LBFGS(params, lr=0.1)
     
-        pbar = tqdm(range(200), desc='description')
+        pbar = tqdm(range(50), desc='description')
        
         for _ in pbar:
            
