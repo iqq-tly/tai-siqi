@@ -66,6 +66,10 @@ class PI_DeepONet(nn.Module):
         s_xx =(hessian(self.operator_net,argnums=3)(u1,u2,u3,x,t).sum(dim=0)).sum(dim=0).to(device)
         s_t =jacrev(self.operator_net,argnums=4)(u1,u2,u3,x,t).sum(dim=0).to(device)
         member1 = torch.tensor(0.5, device='cuda')
+        if member1.device.type == 'cuda':
+            print("tensor_cpu 在 CUDA 设备上")
+        else:
+            print("tensor_cpu 不在 CUDA 设备上")
         member2 = torch.tensor(0.165856529, device='cuda')
         member3 = torch.tensor(0.165856529, device='cuda')
         res =s_t-(member1)*(member2**2)*(x**2)*s_xx-member3*x*s_x+member3*s
