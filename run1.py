@@ -273,8 +273,8 @@ def generate_one_training_data(key,P,Q,K):
 key = random.PRNGKey(0)
 
 K=2.411
-P =300 # number of output sensors, 100 for each side
-Q =240  # number of collocation points for each input sample
+P =450 # number of output sensors, 100 for each side
+Q =200  # number of collocation points for each input sample
 u_1,u_2,u_3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
             =generate_one_training_data(key,P,Q,K)
@@ -296,8 +296,8 @@ t_b = t_b.reshape(-1,)
 outputs_b = outputs_b.reshape(-1,)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
-batch_size1= 50
-batch_size2= 40
+batch_size1= 45
+batch_size2= 20
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
