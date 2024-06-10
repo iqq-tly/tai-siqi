@@ -2,8 +2,6 @@
 import torch
 import torch.nn.functional as F
 import math
-
-
 class KANLinear(torch.nn.Module):
     def __init__(
         self,
@@ -152,17 +150,25 @@ class KANLinear(torch.nn.Module):
         )
 
     def forward(self, x: torch.Tensor):
-        assert x.dim() == 2 and x.size(1) == self.in_features
+        # 确保输入张量和权重在同一设备上
+        x = x.to(self.base_weight.device)
+        assert x.size(-1) == self.in_features
+        original_shape = x.shape
+        x = x.view(-1, self.in_features)
 
         base_output = F.linear(self.base_activation(x), self.base_weight)
         spline_output = F.linear(
             self.b_splines(x).view(x.size(0), -1),
             self.scaled_spline_weight.view(self.out_features, -1),
         )
-        return base_output + spline_output
+        output = base_output + spline_output
+        
+        output = output.view(*original_shape[:-1], self.out_features)
+        return output
 
     @torch.no_grad()
     def update_grid(self, x: torch.Tensor, margin=0.01):
+        x = x.to(self.grid.device)
         assert x.dim() == 2 and x.size(1) == self.in_features
         batch = x.size(0)
 
@@ -206,7 +212,6 @@ class KANLinear(torch.nn.Module):
             ],
             dim=0,
         )
-
         self.grid.copy_(grid.T)
         self.spline_weight.data.copy_(self.curve2coeff(x, unreduced_spline_output))
 
