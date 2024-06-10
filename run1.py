@@ -63,6 +63,10 @@ class PI_DeepONet(nn.Module):
     def residual_net(self,u1,u2,u3,x,t):
         s=self.operator_net(u1,u2,u3,x,t)
         s_x =jacrev(self.operator_net,argnums=3)(u1,u2,u3,x,t).sum(dim=0)
+        if s_x.device.type == 'cuda':
+            print("tensor_cpu 在 CUDA 设备上")
+        else:
+            print("tensor_cpu 不在 CUDA 设备上")
         s_xx =(hessian(self.operator_net,argnums=3)(u1,u2,u3,x,t).sum(dim=0)).sum(dim=0)
         s_t =jacrev(self.operator_net,argnums=4)(u1,u2,u3,x,t).sum(dim=0)
         member1 = torch.tensor(0.5, device='cuda')
