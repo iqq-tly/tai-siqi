@@ -17,7 +17,7 @@ import time
 from torch.func import jacrev, hessian
 start_time=time.time()
 device = torch.device("cuda")
-class PI_DeepONet:
+class PI_DeepONet(nn.Module):
     def __init__(self,model1,model2,model3,model4,model5):
         # Network initialization and evaluation functions
         self.model1 = model1
