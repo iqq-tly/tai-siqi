@@ -85,6 +85,7 @@ class PI_DeepONet:
     def loss_bcs(self,u1,u2, u3,x, t, output):
         # Compute forward pass
         s_pred = self.operator_net(u1,u2,u3,x,t)
+        s_pred.to(device)
         # Compute loss
         loss = torch.mean((output.flatten() - s_pred) ** 2)
         return loss
