@@ -83,6 +83,7 @@ class PI_DeepONet:
 
     # Define boundary loss
     def loss_bcs(self,u1,u2, u3,x, t, output):
+        u1, u2, u3, x, t, output = u1.to(device), u2.to(device), u3.to(device), x.to(device), t.to(device), output.to(device)
         # Compute forward pass
         s_pred = self.operator_net(u1,u2,u3,x,t)
         s_pred.to(device)
@@ -93,6 +94,7 @@ class PI_DeepONet:
 
     # Define residual loss
     def loss_res(self,u1,u2,u3,x, t, output):
+        u1, u2, u3, x, t, output = u1.to(device), u2.to(device), u3.to(device), x.to(device), t.to(device), output.to(device)
         # Compute forward pass
         pred = self.residual_net(u1,u2,u3,x,t)
         pred.to(device)
