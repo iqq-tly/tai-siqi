@@ -82,7 +82,6 @@ class PI_DeepONet(nn.Module):
         # Compute forward pass
         s_pred = self.operator_net(u1,u2,u3,x,t)
         # Compute loss
-        output = output.to(s_pred.device)
         loss = torch.mean((output.flatten() - s_pred) ** 2)
         return loss
 
@@ -91,7 +90,6 @@ class PI_DeepONet(nn.Module):
     def loss_res(self,u1,u2,u3,x, t, output):
         # Compute forward pass
         pred = self.residual_net(u1,u2,u3,x,t)
-        output = output.to(s_pred.device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
 
