@@ -86,6 +86,7 @@ class PI_DeepONet(nn.Module):
     def loss_res(self,u1,u2,u3,x, t, output):
         # Compute forward pass
         pred = self.residual_net(u1,u2,u3,x,t)
+        print(pred.device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
 
@@ -101,7 +102,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=1)
+        self.optimizer = torch.optim.LBFGS(params, lr=0.01)
         pbar = tqdm(range(200), desc='description')
        
         for _ in pbar:
