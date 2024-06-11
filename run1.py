@@ -126,7 +126,7 @@ class PI_DeepONet(nn.Module):
         s_pred2 = self.residual_net(u1,u2,u3,x,t)
         
         # Compute loss
-        loss = torch.mean((output.flatten() - s_pred1) ** 2+s_pred2)
+        loss = torch.mean((output.flatten() - s_pred1) ** 2+s_pred2 ** 2)
         return loss
 
 
