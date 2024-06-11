@@ -288,11 +288,11 @@ dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
 
 
-model1 =KAN([3, 2, 1], base_activation=nn.Identity)
-model2 = KAN([3,2, 1], base_activation=nn.Identity)
-model3 = KAN([3,2, 1], base_activation=nn.Identity)
-model4 = KAN([200, 2, 2], base_activation=nn.Identity)
-model5 = KAN([2, 2, 2], base_activation=nn.Identity)
+model1 =KAN([3, 10, 1], base_activation=nn.Identity)
+model2 = KAN([3,10, 1], base_activation=nn.Identity)
+model3 = KAN([3,10, 1], base_activation=nn.Identity)
+model4 = KAN([200, 10,10], base_activation=nn.Identity)
+model5 = KAN([2,10, 10], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
 model.train(u_1,u_2,u_3,dataloader1,dataloader2)
