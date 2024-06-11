@@ -157,21 +157,25 @@ def f3(x):
 def min_max_normalize(x, min_val, max_val):
     normalized_x = (x - min_val) / (max_val - min_val)
     return normalized_x
-
-
 # Geneate training data corresponding to one input sample
-def generate_one_training_data(key,P,Q,K):
+def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-
+    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
+    call,delta_T,delta_S= calculate_V(T, r, v, M, K)
+    call = np.asarray(call)
+    s_bcs4 = call[idx[:, 1], idx[:, 0]]
+    s_bc4 = s_bcs4.reshape(-1, 1)
+    x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
+    t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
+    x_bcs = np.vstack([x_bc1, x_bc2,x_bc3,x_bc4])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
-    x_bcs=min_max_normalize(x_bcs, x_bcs_min_value, x_bcs_max_value)
+    x_bcs=min_max_normalize(x_bc4, x_bcs_min_value, x_bcs_max_value)
     x_bcs= x_bcs.__array__()
     x_i = torch.tensor(x_bcs)
 
@@ -182,7 +186,8 @@ def generate_one_training_data(key,P,Q,K):
     t_bcs_min_value = np.min(t_bcs)
     t_bcs_max_value = np.max(t_bcs)
     t_bcs= min_max_normalize(t_bcs, t_bcs_min_value,t_bcs_max_value)
-    t_bcs = t_bcs.__array__()
+    t_bcs = np.vstack([t_bcs,t_bc4])
+    t_bcs = t_bc4.__array__()
     t_i = torch.tensor(t_bcs)
 
 
@@ -195,16 +200,16 @@ def generate_one_training_data(key,P,Q,K):
     s_bc3 = f3(x_bc3)
     s_bc3 = np.array(list(s_bc3))
     s_bc3 = s_bc3.reshape(-1, 1)
-    s_train= np.vstack([s_bc1, s_bc2,s_bc3])
+    s_train= np.vstack([s_bc1, s_bc2,s_bc3,s_bc4])
     s_bcs_min_value = np.min(s_train)
     s_bcs_max_value = np.max(s_train)
-    s_train= min_max_normalize(s_train,s_bcs_min_value, s_bcs_max_value)
+    s_train= min_max_normalize(s_bc4,s_bcs_min_value, s_bcs_max_value)
     s_train= s_train.__array__()
 
     outputs_i= torch.tensor(s_train)
 
-    x_b = random.uniform(subkeys[4], shape=(Q, 1), minval=0, maxval=3*K)
-    t_b = random.uniform(subkeys[5], shape=(Q, 1), minval=0, maxval=365)
+    x_b = random.uniform(subkeys[5], shape=(Q, 1), minval=0, maxval=3*K)
+    t_b = random.uniform(subkeys[6], shape=(Q, 1), minval=0, maxval=365)
     x_b = min_max_normalize(x_b,x_bcs_min_value, x_bcs_max_value)
     t_b= min_max_normalize(t_b,t_bcs_min_value,t_bcs_max_value)
     x_b = x_b.__array__()
@@ -222,7 +227,7 @@ def generate_one_training_data(key,P,Q,K):
     s_bc11 = min_max_normalize(s_bc1, s_bcs_min_value, s_bcs_max_value)
     s_bc11= s_bc11.__array__()
     s_bc11 = torch.tensor(s_bc11)
-    u_1= torch.cat((x_bc11,t_bc11,s_bc11), dim=1)
+    u_1= torch.cat((x_bc11,t_bc11,s_bc11), dim=1)  # shape: (4, 2)
 
     x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
     x_bc22 = x_bc22.__array__()
@@ -246,9 +251,9 @@ def generate_one_training_data(key,P,Q,K):
     s_bc33 = s_bc33.__array__()
     s_bc33 = torch.tensor(s_bc33)
     u_3 = torch.cat((x_bc33, t_bc33, s_bc33), dim=1)
-    # print('x', x_bc33)
-    # print(t_bc33)
-    # print(s_bc33)
+
+
+
 
     return u_1,u_2,u_3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, \
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
@@ -258,11 +263,16 @@ def generate_one_training_data(key,P,Q,K):
 key = random.PRNGKey(0)
 
 K=2.411
-P =600 # number of output sensors, 100 for each side
-Q =300  # number of collocation points for each input sample
+P =210 # number of output sensors, 100 for each side
+Q =100  # number of collocation points for each input sample
+M = 5000
+r =0.025610
+v=0.165856529
+T=1
+K=2.411
 u_1,u_2,u_3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
-            =generate_one_training_data(key,P,Q,K)
+            =generate_one_training_data(key,P,Q,K,M,r,v,T)
 u_1=u_1.float().to(device)
 # print(u_1)
 u_2=u_2.float().to(device)
