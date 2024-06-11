@@ -151,7 +151,7 @@ class PI_DeepONet(nn.Module):
         self.optimizer = torch.optim.LBFGS(params, lr=0.01,history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
-        pbar = tqdm(range(50), desc='description')
+        pbar = tqdm(range(100), desc='description')
        
         for _ in pbar:
            
@@ -162,7 +162,7 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =pde_loss+80*bc_loss
+                    loss =pde_loss+bc_loss
                     loss.backward()
                     return loss
 
