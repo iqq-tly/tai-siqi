@@ -258,8 +258,8 @@ def generate_one_training_data(key,P,Q,K):
 key = random.PRNGKey(0)
 
 K=2.411
-P =450 # number of output sensors, 100 for each side
-Q =200  # number of collocation points for each input sample
+P =600 # number of output sensors, 100 for each side
+Q =300  # number of collocation points for each input sample
 u_1,u_2,u_3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
             =generate_one_training_data(key,P,Q,K)
