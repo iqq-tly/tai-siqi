@@ -17,6 +17,52 @@ import time
 from torch.func import jacrev, hessian
 start_time=time.time()
 device = torch.device("cuda")
+def calculate_V(T,r,v,M,K):
+    delta_T=T/M
+    S_max=3*K
+    delta_S= S_max/M
+
+    def get_call_matrix(M):
+        f_matrx = np.matrix(np.array([0.0] * (M + 1) * (M + 1)).reshape((M + 1, M + 1)))
+        f_matrx[:, 0] = 0.0
+        for i in range(M + 1):
+            f_matrx[M, i] = float(max(delta_S * i - K, 0))
+        f_matrx[:, M] = float(S_max - K)
+        print("f_matrix shape : ", f_matrx.shape)
+        return f_matrx
+    def calculate_coeff(j):
+        vj2 = (v * j)**2
+        aj = 0.5 * delta_T * (r * j - vj2)
+        bj = 1 + delta_T * (vj2 + r)
+        cj = -0.5 * delta_T * (r * j + vj2)
+        return aj, bj, cj
+
+    def get_coeff_matrix(M):
+        matrx = np.matrix(np.array([0.0]*(M-1)*(M-1)).reshape((M-1, M-1)))
+        a1, b1, c1 = calculate_coeff(1)
+        am_1, bm_1, cm_1 = calculate_coeff(M - 1)
+        matrx[0,0] = b1
+        matrx[0,1] = c1
+        matrx[M-2, M-3] = am_1
+        matrx[M-2, M-2] = bm_1
+        for i in range(2, M-1):
+            a, b, c = calculate_coeff(i)
+            matrx[i-1, i-2] = a
+            matrx[i-1, i-1] = b
+            matrx[i-1, i] = c
+        print("coeff matrix shape : ",  matrx.shape)
+        return matrx
+
+
+    f_matrx = get_call_matrix(M)
+    matrx = get_coeff_matrix(M)
+    inverse_m = matrx.I
+    for i in range(M, 0, -1):
+        Fi = f_matrx[i, 1:M]
+        Fi_1 = inverse_m * Fi.reshape((M-1, 1))
+        Fi_1 = list(np.array(Fi_1.reshape(1, M-1))[0])
+        f_matrx[i-1, 1:M]=Fi_1
+    return f_matrx, delta_T,delta_S
 class PI_DeepONet(nn.Module):
     def __init__(self,model1,model2,model3,model4,model5):
         super(PI_DeepONet, self).__init__()
