@@ -206,7 +206,7 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
+    idx = random.randint(subkeys[8], (300, 2), 0, max(M, M))
     call,delta_T,delta_S= calculate_V(T, r, v, M, K)
     call = np.asarray(call)
     s_bcs4 = call[idx[:, 1], idx[:, 0]]
