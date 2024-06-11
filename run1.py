@@ -122,9 +122,11 @@ class PI_DeepONet(nn.Module):
     # Define boundary loss
     def loss_bcs(self,u1,u2, u3,x, t, output):
         # Compute forward pass
-        s_pred = self.operator_net(u1,u2,u3,x,t)
+        s_pred1 = self.operator_net(u1,u2,u3,x,t)
+        s_pred2 = self.residual_net(u1,u2,u3,x,t)
+        
         # Compute loss
-        loss = torch.mean((output.flatten() - s_pred) ** 2)
+        loss = torch.mean((output.flatten() - s_pred1) ** 2+s_pred2)
         return loss
 
 
