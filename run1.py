@@ -208,7 +208,7 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (300, 2), 0, max(M, M))
+    idx = random.randint(subkeys[8], (200, 2), 0, max(M, M))
     call,delta_T,delta_S= calculate_V(T, r, v, M, K)
     call = np.asarray(call)
     s_bcs4 = call[idx[:, 1], idx[:, 0]]
@@ -311,8 +311,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
 key = random.PRNGKey(0)
 
 K=2.411
-P =600 # number of output sensors, 100 for each side
-Q =300  # number of collocation points for each input sample
+P =300 # number of output sensors, 100 for each side
+Q =100  # number of collocation points for each input sample
 M = 5000
 r =0.025610
 v=0.165856529
@@ -339,8 +339,8 @@ t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
-batch_size1= 60
-batch_size2= 30
+batch_size1= 30
+batch_size2= 10
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
