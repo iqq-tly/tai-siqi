@@ -164,9 +164,9 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =pde_loss+100*bc_loss
+                    loss =pde_loss+500*bc_loss
                     loss.backward()
-                    return pde_loss+bc_loss
+                    return loss
 
             # if _ % 5 == 0 and _ < 50:
                 # model1.update_grid_from_samples(u_i1)
