@@ -338,7 +338,7 @@ t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
-batch_size1= 30
+batch_size1= 40
 batch_size2= 10
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
