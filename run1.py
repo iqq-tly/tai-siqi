@@ -235,7 +235,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bcs_max_value = np.max(t_bcs)
     t_bcs= min_max_normalize(t_bcs, t_bcs_min_value,t_bcs_max_value)
     t_bcs = np.vstack([t_bcs,t_bc4])
-    t_bcs = t_bc4.__array__()
+    t_bcs = t_bcs.__array__()
     t_i = torch.tensor(t_bcs)
 
 
