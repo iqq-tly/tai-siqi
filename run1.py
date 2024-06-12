@@ -164,7 +164,7 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =0.01*pde_loss+0.001*bc_loss
+                    loss =0.01*pde_loss+bc_loss
                     loss.backward()
                     return loss
 
