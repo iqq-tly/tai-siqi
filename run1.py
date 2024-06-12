@@ -126,7 +126,7 @@ class PI_DeepONet(nn.Module):
         s_pred2 = self.residual_net(u1,u2,u3,x,t)
         
         # Compute loss
-        loss = torch.mean((output.flatten() - s_pred1) ** 2+s_pred2 ** 2)
+        loss = torch.mean((output.flatten() - s_pred1) ** 2)
         return loss
 
 
@@ -150,7 +150,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=1,history_size=20, line_search_fn="strong_wolfe",
+        self.optimizer = torch.optim.LBFGS(params, lr=0.05,history_size=20, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
         pbar = tqdm(range(50), desc='description')
