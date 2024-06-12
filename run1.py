@@ -150,7 +150,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=10,history_size=20, line_search_fn="strong_wolfe",
+        self.optimizer = torch.optim.LBFGS(params, lr=0.001,history_size=20, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
         pbar = tqdm(range(50), desc='description')
@@ -164,7 +164,7 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =pde_loss+100*bc_loss
+                    loss =pde_loss+0.001*bc_loss
                     loss.backward()
                     return loss
 
@@ -312,7 +312,7 @@ key = random.PRNGKey(0)
 
 K=2.411
 P =300 # number of output sensors, 100 for each side
-Q =300  # number of collocation points for each input sample
+Q =200  # number of collocation points for each input sample
 M = 5000
 r =0.025610
 v=0.165856529
@@ -339,7 +339,7 @@ outputs_b = outputs_b.reshape(-1,).to(device)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
 batch_size1= 50
-batch_size2= 30
+batch_size2= 50
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
