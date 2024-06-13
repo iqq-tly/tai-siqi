@@ -150,7 +150,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=0.06,history_size=10, line_search_fn="strong_wolfe",
+        self.optimizer = torch.optim.LBFGS(params, lr=0.1,history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
         pbar = tqdm(range(50), desc='description')
@@ -164,7 +164,7 @@ class PI_DeepONet(nn.Module):
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =5000*pde_loss+10000*bc_loss
+                    loss =50*pde_loss+100*bc_loss
                     loss.backward()
                     return loss
 
@@ -208,7 +208,7 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (200, 2), 0, max(M, M))
+    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
     call,delta_T,delta_S= calculate_V(T, r, v, M, K)
     call = np.asarray(call)
     s_bcs4 = call[idx[:, 1], idx[:, 0]]
@@ -220,10 +220,11 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    x_bcs = np.vstack([x_bc1, x_bc2,x_bc3,x_bc4])
+    # x_bcs = np.vstack([x_bc1, x_bc2,x_bc3,x_bc4])
+    x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
-    x_bcs=min_max_normalize(x_bc4, x_bcs_min_value, x_bcs_max_value)
+    x_bcs=min_max_normalize(x_bcs, x_bcs_min_value, x_bcs_max_value)
     x_bcs= x_bcs.__array__()
     x_i = torch.tensor(x_bcs)
 
@@ -234,8 +235,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bcs_min_value = np.min(t_bcs)
     t_bcs_max_value = np.max(t_bcs)
     t_bcs= min_max_normalize(t_bcs, t_bcs_min_value,t_bcs_max_value)
-    t_bcs = np.vstack([t_bcs,t_bc4])
-    t_bcs = t_bc4.__array__()
+    # t_bcs = np.vstack([t_bcs,t_bc4])
+    t_bcs = t_bcs.__array__()
     t_i = torch.tensor(t_bcs)
 
 
@@ -248,10 +249,11 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc3 = f3(x_bc3)
     s_bc3 = np.array(list(s_bc3))
     s_bc3 = s_bc3.reshape(-1, 1)
-    s_train= np.vstack([s_bc1, s_bc2,s_bc3,s_bc4])
+    # s_train= np.vstack([s_bc1, s_bc2,s_bc3,s_bc4])
+    s_train= np.vstack([s_bc1, s_bc2,s_bc3])
     s_bcs_min_value = np.min(s_train)
     s_bcs_max_value = np.max(s_train)
-    s_train= min_max_normalize(s_bc4,s_bcs_min_value, s_bcs_max_value)
+    s_train= min_max_normalize(s_bcs,s_bcs_min_value, s_bcs_max_value)
     s_train= s_train.__array__()
 
     outputs_i= torch.tensor(s_train)
@@ -276,7 +278,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc11= s_bc11.__array__()
     s_bc11 = torch.tensor(s_bc11)
     u_1= torch.cat((x_bc11,t_bc11,s_bc11), dim=1)  # shape: (4, 2)
-    u_1= s_bc11
+    
 
     x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
     x_bc22 = x_bc22.__array__()
@@ -288,7 +290,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc22 = s_bc22.__array__()
     s_bc22 = torch.tensor(s_bc22)
     u_2 = torch.cat((x_bc22, t_bc22, s_bc22), dim=1)
-    u_2= s_bc22
+ 
 
 
     x_bc33 = min_max_normalize(x_bc3, x_bcs_min_value, x_bcs_max_value)
@@ -301,7 +303,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc33 = s_bc33.__array__()
     s_bc33 = torch.tensor(s_bc33)
     u_3 = torch.cat((x_bc33, t_bc33, s_bc33), dim=1)
-    u_3 =  s_bc33
+
 
 
 
@@ -315,7 +317,7 @@ key = random.PRNGKey(0)
 
 K=2.411
 P =300 # number of output sensors, 100 for each side
-Q =200  # number of collocation points for each input sample
+Q =100  # number of collocation points for each input sample
 M = 5000
 r =0.025610
 v=0.165856529
