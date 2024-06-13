@@ -150,7 +150,7 @@ class PI_DeepONet(nn.Module):
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
-        self.optimizer = torch.optim.LBFGS(params, lr=1.5,history_size=10, line_search_fn="strong_wolfe",
+        self.optimizer = torch.optim.LBFGS(params, lr=0.8,history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
         pbar = tqdm(range(20), desc='description')
@@ -317,7 +317,7 @@ key = random.PRNGKey(0)
 
 K=2.411
 P =300 # number of output sensors, 100 for each side
-Q =100  # number of collocation points for each input sample
+Q =200  # number of collocation points for each input sample
 M = 5000
 r =0.025610
 v=0.165856529
