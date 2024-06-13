@@ -276,6 +276,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc11= s_bc11.__array__()
     s_bc11 = torch.tensor(s_bc11)
     u_1= torch.cat((x_bc11,t_bc11,s_bc11), dim=1)  # shape: (4, 2)
+    u_1= s_bc11
 
     x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
     x_bc22 = x_bc22.__array__()
@@ -287,6 +288,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc22 = s_bc22.__array__()
     s_bc22 = torch.tensor(s_bc22)
     u_2 = torch.cat((x_bc22, t_bc22, s_bc22), dim=1)
+    u_2= s_bc22
 
 
     x_bc33 = min_max_normalize(x_bc3, x_bcs_min_value, x_bcs_max_value)
@@ -299,6 +301,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc33 = s_bc33.__array__()
     s_bc33 = torch.tensor(s_bc33)
     u_3 = torch.cat((x_bc33, t_bc33, s_bc33), dim=1)
+    u_3 =  s_bc33
 
 
 
