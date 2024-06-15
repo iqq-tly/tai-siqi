@@ -161,7 +161,7 @@ class PI_DeepONet(nn.Module):
             
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b),(x_bc4, t_bc4,s_bc4) in zip(dataloader1, dataloader2,dataloader3):
                 def closure():
-                    global pde_loss, bc_loss1,label_loss
+                    global pde_loss, bc_loss,label_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
@@ -210,7 +210,7 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
+    idx = random.randint(subkeys[8], (200, 2), 0, max(M, M))
     call,delta_T,delta_S= calculate_V(T, r, v, M, K)
     call = np.asarray(call)
     s_bcs4 = call[idx[:, 1], idx[:, 0]]
