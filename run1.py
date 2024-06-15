@@ -140,7 +140,7 @@ class PI_DeepONet(nn.Module):
 
 
 
-    def train(self,u1,u2,u3,dataloader1,dataloader2):
+    def train(self,u1,u2,u3,dataloader1,dataloader2,dataloader3):
         params1 = tuple(model1.parameters())
         params2 = tuple(model2.parameters())
         params3 = tuple(model3.parameters())
