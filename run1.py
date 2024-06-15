@@ -154,17 +154,19 @@ class PI_DeepONet(nn.Module):
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
         pbar = tqdm(range(20), desc='description')
+    
        
         for _ in pbar:
            
             
-            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
+            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b),(x_bc4, t_bc4,s_bc4) in zip(dataloader1, dataloader2,dataloader3):
                 def closure():
-                    global pde_loss, bc_loss
+                    global pde_loss, bc_loss1,label_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
-                    loss =pde_loss+500*bc_loss
+                    label_loss=self.loss_bcs(u1,u2,u3,x_bc4, t_bc4,s_bc4)
+                    loss =pde_loss+bc_loss+ label_loss
                     loss.backward()
                     return loss
 
@@ -178,11 +180,11 @@ class PI_DeepONet(nn.Module):
            
 
             if _ % 1 == 0:
-                pbar.set_description("pde loss: %.2e | bc loss1: %.2e" % (
-                pde_loss.detach().cpu().numpy(), bc_loss.detach().cpu().numpy()))
+                pbar.set_description("pde loss: %.2e | bc loss: %.2e| label loss: %.2e" % (
+                pde_loss.detach().cpu().numpy(), bc_loss.detach().cpu().numpy(),label_loss.detach().cpu().numpy()))
 
-            self.pde_losses.append(pde_loss.detach().cpu().numpy())
-            self.bc_losses.append(bc_loss.detach().cpu().numpy())
+            # self.pde_losses.append(pde_loss.detach().cpu().numpy())
+            # self.bc_losses.append(bc_loss.detach().cpu().numpy())
 
 
 
@@ -220,7 +222,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    # x_bcs = np.vstack([x_bc1, x_bc2,x_bc3,x_bc4])
+    # x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
@@ -305,10 +307,23 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     u_3 = torch.cat((x_bc33, t_bc33, s_bc33), dim=1)
 
 
+    x_bc4= min_max_normalize(x_bc4,x_bcs_min_value, x_bcs_max_value)
+    x_bc4 = x_bc4.__array__()
+    x_bc4= torch.tensor(x_bc4)
+    t_bc4 = t_bc4.__array__()
+    t_bc4= torch.tensor(t_bc4)
+    s_bc4= min_max_normalize(s_bc4,s_bcs_min_value, s_bcs_max_value)
+    s_bc4= s_bc4.__array__()
+    s_bc4 = torch.tensor(s_bc4)
+
+    outputs_i= torch.tensor(s_train)
+    
 
 
 
-    return u_1,u_2,u_3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, \
+
+
+    return u_1,u_2,u_3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4, x_bc4 ,t_bc4, s_bc4 \
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
 
 
@@ -335,18 +350,26 @@ outputs_i=outputs_i.float()
 x_b=x_b.float()
 t_b=t_b.float()
 outputs_b=outputs_b.float()
+x_bc4=x_bc4.float()
+t_bc4=t_bc4.float()
+s_bc4=s_bc4.float()
 x_i = x_i.reshape(-1,).to(device)
 t_i = t_i.reshape(-1,).to(device)
 outputs_i = outputs_i.reshape(-1,).to(device)
 x_b = x_b.reshape(-1,).to(device)
 t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
+x_bc4 = x_bc4.reshape(-1,).to(device)
+t_bc4 = t_bc4.reshape(-1,).to(device)
+s_bc4 = s_bc4.reshape(-1,).to(device)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
+dataset3 = TensorDataset(x_bc4,t_bc4,s_bc4)
 batch_size1= 50
 batch_size2= 50
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
+dataloader3 = DataLoader(dataset3, batch_size=batch_size2, shuffle=True)
 
 
 
@@ -357,7 +380,7 @@ model4 = KAN([100,2,2], base_activation=nn.Identity)
 model5 = KAN([2,2,2], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.train(u_1,u_2,u_3,dataloader1,dataloader2)
+model.train(u_1,u_2,u_3,dataloader1,dataloader2,dataloader2)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
