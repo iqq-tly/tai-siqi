@@ -210,7 +210,7 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (200, 2), 0, max(M, M))
+    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
     call,delta_T,delta_S= calculate_V(T, r, v, M, K)
     call = np.asarray(call)
     s_bcs4 = call[idx[:, 1], idx[:, 0]]
@@ -332,7 +332,7 @@ key = random.PRNGKey(0)
 
 K=2.411
 P =300 # number of output sensors, 100 for each side
-Q =200  # number of collocation points for each input sample
+Q =100  # number of collocation points for each input sample
 M = 5000
 r =0.025610
 v=0.165856529
