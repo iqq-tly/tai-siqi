@@ -380,7 +380,7 @@ model4 = KAN([100,2,2], base_activation=nn.Identity)
 model5 = KAN([2,2,2], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.train(u_1,u_2,u_3,dataloader1,dataloader2,dataloader2)
+model.train(u_1,u_2,u_3,dataloader1,dataloader2,dataloader3)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
