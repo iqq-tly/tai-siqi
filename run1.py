@@ -327,7 +327,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
 
 
 
-    return u_1,u_s1,u_2,u_s2,u_3,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4 ,t_bc4, s_bc4, \
+    return u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4 ,t_bc4, s_bc4, \
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
 
 
@@ -341,7 +341,7 @@ M = 5000
 r =0.025610
 v=0.165856529
 T=1
-u_1,u_s1,u_2,u_s2,u_3,u_s3,,x_i, t_i,outputs_i, x_b, t_b, outputs_b,x_bc4 ,t_bc4, s_bc4 ,\
+u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,x_bc4 ,t_bc4, s_bc4 ,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
             =generate_one_training_data(key,P,Q,K,M,r,v,T)
 u_1=u_1.float().to(device)
