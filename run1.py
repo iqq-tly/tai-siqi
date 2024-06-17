@@ -97,9 +97,9 @@ class PI_DeepONet(nn.Module):
         return permuted_tensor
 
     # Define DeepONet architecture
-    def operator_net(self,u1,u2,u3,x,t):
+    def operator_net(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t):
         n=len(x)
-        B1,loss=self.brunk_net(u1,u2,u3)
+        B1,loss=self.brunk_net(u1,u2,u3,u_s1,u_s2,u_s3)
         B1= (B1.view(1, -1)).repeat(n, 1).float()
         B = self.model4(B1)
         y = self.helper(x, t)
