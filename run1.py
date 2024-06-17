@@ -108,11 +108,11 @@ class PI_DeepONet(nn.Module):
         return outputs
 
     # Define PDE residual
-    def residual_net(self,u1,u2,u3,x,t):
-        s=self.operator_net(u1,u2,u3,x,t)
-        s_x =jacrev(self.operator_net,argnums=3)(u1,u2,u3,x,t).sum(dim=0).to(device)
-        s_xx =(hessian(self.operator_net,argnums=3)(u1,u2,u3,x,t).sum(dim=0)).sum(dim=0).to(device)
-        s_t =jacrev(self.operator_net,argnums=4)(u1,u2,u3,x,t).sum(dim=0).to(device)
+    def residual_net(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t):
+        s=self.operator_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
+        s_x =jacrev(self.operator_net,argnums=6)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0).to(device)
+        s_xx =(hessian(self.operator_net,argnums=6)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0)).sum(dim=0).to(device)
+        s_t =jacrev(self.operator_net,argnums=7)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0).to(device)
         member1 = torch.tensor(0.5, device='cuda')
         member2 = torch.tensor(0.165856529, device='cuda')
         member3 = torch.tensor(0.025610, device='cuda')
@@ -122,9 +122,9 @@ class PI_DeepONet(nn.Module):
         # v=0.165856529
 
     # Define boundary loss
-    def loss_bcs(self,u1,u2, u3,x, t, output):
+    def loss_bcs(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t, output):
         # Compute forward pass
-        s_pred= self.operator_net(u1,u2,u3,x,t)
+        s_pred= self.operator_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
        
         
         # Compute loss
@@ -133,9 +133,9 @@ class PI_DeepONet(nn.Module):
 
 
     # Define residual loss
-    def loss_res(self,u1,u2,u3,x, t, output):
+    def loss_res(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t, output):
         # Compute forward pass
-        pred = self.residual_net(u1,u2,u3,x,t)
+        pred = self.residual_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
         print(pred.device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
