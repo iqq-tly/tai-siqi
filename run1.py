@@ -153,7 +153,7 @@ class PI_DeepONet(nn.Module):
         self.optimizer = torch.optim.LBFGS(params, lr=0.006,history_size=10, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-32, tolerance_change=1e-32)
     
-        pbar = tqdm(range(300), desc='description')
+        pbar = tqdm(range(50), desc='description')
     
        
         for _ in pbar:
@@ -166,7 +166,7 @@ class PI_DeepONet(nn.Module):
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
                     label_loss=self.loss_bcs(u1,u2,u3,x_bc4, t_bc4,s_bc4)
-                    loss =1000*pde_loss+3000*bc_loss+5000*label_loss
+                    loss =0.001*pde_loss+bc_loss+label_loss
                     loss.backward()
                     return loss
 
@@ -373,11 +373,11 @@ dataloader3 = DataLoader(dataset3, batch_size=batch_size2, shuffle=True)
 
 
 
-model1 =KAN([3, 2, 1], base_activation=nn.Identity)
-model2 = KAN([3,2,1], base_activation=nn.Identity)
-model3 = KAN([3,2,1], base_activation=nn.Identity)
-model4 = KAN([100,2,2], base_activation=nn.Identity)
-model5 = KAN([2,2,2], base_activation=nn.Identity)
+model1 =KAN([3, 10, 1], base_activation=nn.Identity)
+model2 = KAN([3,10,1], base_activation=nn.Identity)
+model3 = KAN([3,10,1], base_activation=nn.Identity)
+model4 = KAN([100,10,10], base_activation=nn.Identity)
+model5 = KAN([2,10,10], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
 model.train(u_1,u_2,u_3,dataloader1,dataloader2,dataloader3)
