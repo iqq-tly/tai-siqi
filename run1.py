@@ -79,12 +79,14 @@ class PI_DeepONet(nn.Module):
     def reshape(self,X):
         reshaped_X = X.reshape(-1,)
         return reshaped_X
-    def brunk_net(self,u1,u2,u3):
+    
+    def brunk_net(self,u1,u2,u3,u_s1,u_s2,u_s3):
         BC1=self.model1(u1)
         BC2=self.model2(u2)
         BC3 = self.model3(u3)
         B=BC1*BC2*BC3
-        return B
+        loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
+        return B,loss
 
 
     def helper(self,X, Y):
@@ -97,7 +99,7 @@ class PI_DeepONet(nn.Module):
     # Define DeepONet architecture
     def operator_net(self,u1,u2,u3,x,t):
         n=len(x)
-        B1=self.brunk_net(u1,u2,u3)
+        B1,loss=self.brunk_net(u1,u2,u3)
         B1= (B1.view(1, -1)).repeat(n, 1).float()
         B = self.model4(B1)
         y = self.helper(x, t)
@@ -140,7 +142,7 @@ class PI_DeepONet(nn.Module):
 
 
 
-    def train(self,u1,u2,u3,dataloader1,dataloader2,dataloader3):
+    def train(self,u1,u2,u3, u_s1, u_s2, u_s3,dataloader1,dataloader2,dataloader3):
         params1 = tuple(model1.parameters())
         params2 = tuple(model2.parameters())
         params3 = tuple(model3.parameters())
@@ -161,12 +163,13 @@ class PI_DeepONet(nn.Module):
             
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b),(x_bc4, t_bc4,s_bc4) in zip(dataloader1, dataloader2,dataloader3):
                 def closure():
-                    global pde_loss, bc_loss,label_loss
+                    global pde_loss, bc_loss,label_loss,brunk_net_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3, x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,x_b, t_b, outputs_b)
                     label_loss=self.loss_bcs(u1,u2,u3,x_bc4, t_bc4,s_bc4)
-                    loss =10000*pde_loss+20000*bc_loss+80000*label_loss
+                    _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
+                    loss =10000*pde_loss+20000*bc_loss+80000*label_loss+brunk_net_loss
                     loss.backward()
                     torch.nn.utils.clip_grad_norm_(params, clip_value)
                     return loss
@@ -280,8 +283,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc11 = min_max_normalize(s_bc1, s_bcs_min_value, s_bcs_max_value)
     s_bc11= s_bc11.__array__()
     s_bc11 = torch.tensor(s_bc11)
-    u_1= torch.cat((x_bc11,t_bc11,s_bc11), dim=1)  # shape: (4, 2)
-    
+    u_1= torch.cat((x_bc11,t_bc11), dim=1)  # shape: (4, 2)
+    u_s1=s_bc11
 
     x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
     x_bc22 = x_bc22.__array__()
@@ -292,8 +295,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc22 = min_max_normalize(s_bc2, s_bcs_min_value, s_bcs_max_value)
     s_bc22 = s_bc22.__array__()
     s_bc22 = torch.tensor(s_bc22)
-    u_2 = torch.cat((x_bc22, t_bc22, s_bc22), dim=1)
- 
+    u_2 = torch.cat((x_bc22, t_bc22), dim=1)
+    u_s2=s_bc22
 
 
     x_bc33 = min_max_normalize(x_bc3, x_bcs_min_value, x_bcs_max_value)
@@ -305,8 +308,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc33 = min_max_normalize(s_bc3, s_bcs_min_value, s_bcs_max_value)
     s_bc33 = s_bc33.__array__()
     s_bc33 = torch.tensor(s_bc33)
-    u_3 = torch.cat((x_bc33, t_bc33, s_bc33), dim=1)
-
+    u_3 = torch.cat((x_bc33, t_bc33), dim=1)
+    u_s3=s_bc33
 
     x_bc4= min_max_normalize(x_bc4,x_bcs_min_value, x_bcs_max_value)
     x_bc4 = x_bc4.__array__()
@@ -317,14 +320,14 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc4= s_bc4.__array__()
     s_bc4 = torch.tensor(s_bc4)
 
-    outputs_i= torch.tensor(s_train)
+
     
 
 
 
 
 
-    return u_1,u_2,u_3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4 ,t_bc4, s_bc4, \
+    return u_1,u_s1,u_2,u_s2,u_3,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4 ,t_bc4, s_bc4, \
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
 
 
@@ -338,13 +341,16 @@ M = 5000
 r =0.025610
 v=0.165856529
 T=1
-u_1,u_2,u_3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,x_bc4 ,t_bc4, s_bc4 ,\
+u_1,u_s1,u_2,u_s2,u_3,u_s3,,x_i, t_i,outputs_i, x_b, t_b, outputs_b,x_bc4 ,t_bc4, s_bc4 ,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
             =generate_one_training_data(key,P,Q,K,M,r,v,T)
 u_1=u_1.float().to(device)
+u_s1=u_s1.float().to(device).reshape(-1,)
 # print(u_1)
 u_2=u_2.float().to(device)
+u_s2=u_s2.float().to(device).reshape(-1,)
 u_3=u_3.float().to(device)
+u_s3=u_s3.float().to(device).reshape(-1,)
 x_i=x_i.float()
 t_i=t_i.float()
 outputs_i=outputs_i.float()
@@ -381,7 +387,7 @@ model4 = KAN([100,10,10], base_activation=nn.Identity)
 model5 = KAN([2,10,10], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model3,model4,model5)
 model.to(device)
-model.train(u_1,u_2,u_3,dataloader1,dataloader2,dataloader3)
+model.train(u1,u2,u3, u_s1, u_s2, u_s3,dataloader1,dataloader2,dataloader3)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
@@ -393,7 +399,7 @@ t_test=t_test.unsqueeze(1).to(device)
 x_test=min_max_normalize(x_test,x_bcs_min_value, x_bcs_max_value)
 t_test=min_max_normalize(t_test,t_bcs_min_value,t_bcs_max_value)
 
-s_pred = model.operator_net(u_1,u_2,u_3,x_test,t_test)
+s_pred = model.operator_net(u_1,u_2,u_3, u_s1, u_s2, u_s3,x_test,t_test)
 s_pred=s_pred*s_bcs_max_value
 s_true=data.iloc[:,3]
 s_true=torch.tensor(s_true).to(device)
