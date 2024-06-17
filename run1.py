@@ -168,6 +168,7 @@ class PI_DeepONet(nn.Module):
                     label_loss=self.loss_bcs(u1,u2,u3,x_bc4, t_bc4,s_bc4)
                     loss =10000*pde_loss+20000*bc_loss+80000*label_loss
                     loss.backward()
+                    torch.nn.utils.clip_grad_norm_(params, clip_value)
                     return loss
 
             # if _ % 5 == 0 and _ < 50:
