@@ -171,7 +171,6 @@ class PI_DeepONet(nn.Module):
                     _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
                     loss =10000*pde_loss+20000*bc_loss+80000*label_loss+brunk_net_loss
                     loss.backward()
-                    torch.nn.utils.clip_grad_norm_(params, clip_value)
                     return loss
 
             # if _ % 5 == 0 and _ < 50:
