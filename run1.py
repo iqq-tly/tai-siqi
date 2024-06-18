@@ -169,7 +169,7 @@ class PI_DeepONet(nn.Module):
                     pde_loss=self.loss_res(u1,u2,u3,u_s1,u_s2,u_s3,x_b, t_b, outputs_b)
                     label_loss=self.loss_bcs(u1,u2,u3,u_s1,u_s2,u_s3,x_bc4, t_bc4,s_bc4)
                     _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
-                    loss =pde_loss+bc_loss+label_loss+brunk_net_loss
+                    loss =pde_loss+bc_loss+10*label_loss+brunk_net_loss
                     loss.backward()
                     return loss
 
