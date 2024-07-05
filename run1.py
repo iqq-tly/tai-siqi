@@ -145,10 +145,10 @@ class PI_DeepONet(nn.Module):
     def train(self,u1,u2,u_s1, u_s2,dataloader1,dataloader2):
         params1 = tuple(model1.parameters())
         params2 = tuple(model2.parameters())
-        params3 = tuple(model3.parameters())
+        # params3 = tuple(model3.parameters())
         params4 = tuple(model4.parameters())
         params5 = tuple(model5.parameters())
-        params = params1 + params2+ params3+ params4+ params5
+        params = params1 + params2+ params4+ params5
         # params = (model1.parameters(), model2.parameters())
         # Initialize optimizer
 
