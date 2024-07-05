@@ -97,7 +97,7 @@ class PI_DeepONet(nn.Module):
         return permuted_tensor
 
     # Define DeepONet architecture
-    def operator_net(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t):
+    def operator_net(self,u1,u2,u_s1,u_s2,x,t):
         n=len(x)
         B1=self.brunk_net(u1,u2,u3,u_s1,u_s2,u_s3)
         B1= (B1.view(1, -1)).repeat(n, 1).float()
@@ -108,11 +108,11 @@ class PI_DeepONet(nn.Module):
         return outputs
 
     # Define PDE residual
-    def residual_net(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t):
-        s=self.operator_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
-        s_x =jacrev(self.operator_net,argnums=6)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0).to(device)
-        s_xx =(hessian(self.operator_net,argnums=6)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0)).sum(dim=0).to(device)
-        s_t =jacrev(self.operator_net,argnums=7)(u1,u2,u3,u_s1,u_s2,u_s3,x,t).sum(dim=0).to(device)
+    def residual_net(self,u1,u2,u_s1,u_s2,x,t):
+        s=self.operator_net(u1,u2,u_s1,u_s2,x,t)
+        s_x =jacrev(self.operator_net,argnums=6)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
+        s_xx =(hessian(self.operator_net,argnums=6)(u1,u2,u_s1,u_s2,x,t).sum(dim=0)).sum(dim=0).to(device)
+        s_t =jacrev(self.operator_net,argnums=7)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
         member1 = torch.tensor(0.5, device='cuda')
         member2 = torch.tensor(0.165856529, device='cuda')
         member3 = torch.tensor(0.025610, device='cuda')
@@ -122,9 +122,9 @@ class PI_DeepONet(nn.Module):
         # v=0.165856529
 
     # Define boundary loss
-    def loss_bcs(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t, output):
+    def loss_bcs(self,u1,u2,u_s1,u_s2,x,t, output):
         # Compute forward pass
-        s_pred= self.operator_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
+        s_pred= self.operator_net(u1,u2,u_s1,u_s2,x,t,x,t)
        
         
         # Compute loss
@@ -133,9 +133,9 @@ class PI_DeepONet(nn.Module):
 
 
     # Define residual loss
-    def loss_res(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t, output):
+    def loss_res(self,u1,u2,u_s1,u_s2,x,toutput):
         # Compute forward pass
-        pred = self.residual_net(u1,u2,u3,u_s1,u_s2,u_s3,x,t)
+        pred = self.residual_netu1,u2,u_s1,u_s2,x,t)
         print(pred.device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
@@ -165,9 +165,9 @@ class PI_DeepONet(nn.Module):
                 def closure():
                     global pde_loss, bc_loss,label_loss,brunk_net_loss
                     self.optimizer.zero_grad()
-                    bc_loss= self.loss_bcs(u1,u2,u3,u_s1,u_s2,u_s3,x_i, t_i,outputs_i)
-                    pde_loss=self.loss_res(u1,u2,u3,u_s1,u_s2,u_s3,x_b, t_b, outputs_b)
-                    # _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
+                    bc_loss= self.loss_bcs(u1,u2,u_s1,u_s2,x_i, t_i,outputs_i)
+                    pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b, t_b, outputs_b)
+                    # _,brunk_net_loss= model.brunk_net(u1, u2,u_s1, u_s2)
                     loss =100*pde_loss+100*bc_loss
                     loss.backward()
                     return loss
