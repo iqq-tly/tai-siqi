@@ -133,7 +133,7 @@ class PI_DeepONet(nn.Module):
 
 
     # Define residual loss
-    def loss_res(self,u1,u2,u_s1,u_s2,x,toutput):
+    def loss_res(self,u1,u2,u_s1,u_s2,x,t,toutput):
         # Compute forward pass
         pred = self.residual_netu1(u1,u2,u_s1,u_s2,x,t)
         print(pred.device)
@@ -166,7 +166,7 @@ class PI_DeepONet(nn.Module):
                     global pde_loss, bc_loss,label_loss,brunk_net_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u_s1,u_s2,x_i, t_i,outputs_i)
-                    pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b, t_b, outputs_b)
+                    pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b,t_b,outputs_b)
                     # _,brunk_net_loss= model.brunk_net(u1, u2,u_s1, u_s2)
                     loss =100*pde_loss+100*bc_loss
                     loss.backward()
