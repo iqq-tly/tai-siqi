@@ -181,8 +181,8 @@ class PI_DeepONet(nn.Module):
            
 
             if _ % 1 == 0:
-                pbar.set_description("pde loss: %.2e | bc loss: %.2e| label loss: %.2e|brunk_net_loss: %.2e" % (
-                pde_loss.detach().cpu().numpy(), bc_loss.detach().cpu().numpy(),label_loss.detach().cpu().numpy(),brunk_net_loss.detach().cpu().numpy()))
+                pbar.set_description("pde loss: %.2e | bc loss: %.2e" % (
+                pde_loss.detach().cpu().numpy(), bc_loss.detach().cpu().numpy()))
 
             # self.pde_losses.append(pde_loss.detach().cpu().numpy())
             # self.bc_losses.append(bc_loss.detach().cpu().numpy())
