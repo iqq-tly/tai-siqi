@@ -161,7 +161,7 @@ class PI_DeepONet(nn.Module):
         for _ in pbar:
            
             
-            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2,dataloader3):
+            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 def closure():
                     global pde_loss, bc_loss,label_loss,brunk_net_loss
                     self.optimizer.zero_grad()
