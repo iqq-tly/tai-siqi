@@ -110,9 +110,9 @@ class PI_DeepONet(nn.Module):
     # Define PDE residual
     def residual_net(self,u1,u2,u_s1,u_s2,x,t):
         s=self.operator_net(u1,u2,u_s1,u_s2,x,t)
-        s_x =jacrev(self.operator_net,argnums=6)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
-        s_xx =(hessian(self.operator_net,argnums=6)(u1,u2,u_s1,u_s2,x,t).sum(dim=0)).sum(dim=0).to(device)
-        s_t =jacrev(self.operator_net,argnums=7)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
+        s_x =jacrev(self.operator_net,argnums=4)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
+        s_xx =(hessian(self.operator_net,argnums=4)(u1,u2,u_s1,u_s2,x,t).sum(dim=0)).sum(dim=0).to(device)
+        s_t =jacrev(self.operator_net,argnums=5)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
         member1 = torch.tensor(0.5, device='cuda')
         member2 = torch.tensor(0.165856529, device='cuda')
         member3 = torch.tensor(0.025610, device='cuda')
