@@ -324,7 +324,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
 
 
 
-    return u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b,\
+    return u_1,u_2,u_s1,u_s2,x_i,t_i,outputs_i,x_b,t_b,outputs_b,\
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
 
 
