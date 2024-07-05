@@ -135,7 +135,7 @@ class PI_DeepONet(nn.Module):
     # Define residual loss
     def loss_res(self,u1,u2,u_s1,u_s2,x,t,toutput):
         # Compute forward pass
-        pred = self.residual_netu1(u1,u2,u_s1,u_s2,x,t)
+        pred = self.residual_net(u1,u2,u_s1,u_s2,x,t)
         print(pred.device)
         loss = torch.mean((output.flatten() - pred) ** 2)
         return loss
@@ -163,7 +163,7 @@ class PI_DeepONet(nn.Module):
             
             for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2):
                 def closure():
-                    global pde_loss, bc_loss,label_loss,brunk_net_loss
+                    global pde_loss, bc_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u_s1,u_s2,x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b,t_b,outputs_b)
