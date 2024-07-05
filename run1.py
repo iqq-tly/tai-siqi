@@ -124,7 +124,7 @@ class PI_DeepONet(nn.Module):
     # Define boundary loss
     def loss_bcs(self,u1,u2,u_s1,u_s2,x,t, output):
         # Compute forward pass
-        s_pred= self.operator_net(u1,u2,u_s1,u_s2,x,t,x,t)
+        s_pred= self.operator_net(u1,u2,u_s1,u_s2,x,t)
        
         
         # Compute loss
