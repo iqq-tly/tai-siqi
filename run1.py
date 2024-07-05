@@ -17,59 +17,59 @@ import time
 from torch.func import jacrev, hessian
 start_time=time.time()
 device = torch.device("cuda")
-def calculate_V(T,r,v,M,K):
-    delta_T=T/M
-    S_max=3*K
-    delta_S= S_max/M
+# def calculate_V(T,r,v,M,K):
+#     delta_T=T/M
+#     S_max=3*K
+#     delta_S= S_max/M
 
-    def get_call_matrix(M):
-        f_matrx = np.matrix(np.array([0.0] * (M + 1) * (M + 1)).reshape((M + 1, M + 1)))
-        f_matrx[:, 0] = 0.0
-        for i in range(M + 1):
-            f_matrx[M, i] = float(max(delta_S * i - K, 0))
-        f_matrx[:, M] = float(S_max - K)
-        print("f_matrix shape : ", f_matrx.shape)
-        return f_matrx
-    def calculate_coeff(j):
-        vj2 = (v * j)**2
-        aj = 0.5 * delta_T * (r * j - vj2)
-        bj = 1 + delta_T * (vj2 + r)
-        cj = -0.5 * delta_T * (r * j + vj2)
-        return aj, bj, cj
+#     def get_call_matrix(M):
+#         f_matrx = np.matrix(np.array([0.0] * (M + 1) * (M + 1)).reshape((M + 1, M + 1)))
+#         f_matrx[:, 0] = 0.0
+#         for i in range(M + 1):
+#             f_matrx[M, i] = float(max(delta_S * i - K, 0))
+#         f_matrx[:, M] = float(S_max - K)
+#         print("f_matrix shape : ", f_matrx.shape)
+#         return f_matrx
+#     def calculate_coeff(j):
+#         vj2 = (v * j)**2
+#         aj = 0.5 * delta_T * (r * j - vj2)
+#         bj = 1 + delta_T * (vj2 + r)
+#         cj = -0.5 * delta_T * (r * j + vj2)
+#         return aj, bj, cj
 
-    def get_coeff_matrix(M):
-        matrx = np.matrix(np.array([0.0]*(M-1)*(M-1)).reshape((M-1, M-1)))
-        a1, b1, c1 = calculate_coeff(1)
-        am_1, bm_1, cm_1 = calculate_coeff(M - 1)
-        matrx[0,0] = b1
-        matrx[0,1] = c1
-        matrx[M-2, M-3] = am_1
-        matrx[M-2, M-2] = bm_1
-        for i in range(2, M-1):
-            a, b, c = calculate_coeff(i)
-            matrx[i-1, i-2] = a
-            matrx[i-1, i-1] = b
-            matrx[i-1, i] = c
-        print("coeff matrix shape : ",  matrx.shape)
-        return matrx
+#     def get_coeff_matrix(M):
+#         matrx = np.matrix(np.array([0.0]*(M-1)*(M-1)).reshape((M-1, M-1)))
+#         a1, b1, c1 = calculate_coeff(1)
+#         am_1, bm_1, cm_1 = calculate_coeff(M - 1)
+#         matrx[0,0] = b1
+#         matrx[0,1] = c1
+#         matrx[M-2, M-3] = am_1
+#         matrx[M-2, M-2] = bm_1
+#         for i in range(2, M-1):
+#             a, b, c = calculate_coeff(i)
+#             matrx[i-1, i-2] = a
+#             matrx[i-1, i-1] = b
+#             matrx[i-1, i] = c
+#         print("coeff matrix shape : ",  matrx.shape)
+#         return matrx
 
 
-    f_matrx = get_call_matrix(M)
-    matrx = get_coeff_matrix(M)
-    inverse_m = matrx.I
-    for i in range(M, 0, -1):
-        Fi = f_matrx[i, 1:M]
-        Fi_1 = inverse_m * Fi.reshape((M-1, 1))
-        Fi_1 = list(np.array(Fi_1.reshape(1, M-1))[0])
-        f_matrx[i-1, 1:M]=Fi_1
-    return f_matrx, delta_T,delta_S
+#     f_matrx = get_call_matrix(M)
+#     matrx = get_coeff_matrix(M)
+#     inverse_m = matrx.I
+#     for i in range(M, 0, -1):
+#         Fi = f_matrx[i, 1:M]
+#         Fi_1 = inverse_m * Fi.reshape((M-1, 1))
+#         Fi_1 = list(np.array(Fi_1.reshape(1, M-1))[0])
+#         f_matrx[i-1, 1:M]=Fi_1
+#     return f_matrx, delta_T,delta_S
 class PI_DeepONet(nn.Module):
-    def __init__(self,model1,model2,model3,model4,model5):
+    def __init__(self,model1,model2,model4,model5):
         super(PI_DeepONet, self).__init__()
         # Network initialization and evaluation functions
         self.model1 = model1
         self.model2 = model2
-        self.model3 = model3
+        # self.model3 = model3
         self.model4 = model4
         self.model5 = model5
 
@@ -80,13 +80,13 @@ class PI_DeepONet(nn.Module):
         reshaped_X = X.reshape(-1,)
         return reshaped_X
     
-    def brunk_net(self,u1,u2,u3,u_s1,u_s2,u_s3):
+    def brunk_net(self,u1,u2,u_s1,u_s2):
         BC1=self.model1(u1)
         BC2=self.model2(u2)
-        BC3 = self.model3(u3)
-        B=BC1*BC2*BC3
-        loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
-        return B,loss
+        # BC3 = self.model3(u3)
+        B=BC1*BC2
+        # loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
+        return B
 
 
     def helper(self,X, Y):
@@ -99,7 +99,7 @@ class PI_DeepONet(nn.Module):
     # Define DeepONet architecture
     def operator_net(self,u1,u2,u3,u_s1,u_s2,u_s3,x,t):
         n=len(x)
-        B1,loss=self.brunk_net(u1,u2,u3,u_s1,u_s2,u_s3)
+        B1=self.brunk_net(u1,u2,u3,u_s1,u_s2,u_s3)
         B1= (B1.view(1, -1)).repeat(n, 1).float()
         B = self.model4(B1)
         y = self.helper(x, t)
@@ -142,7 +142,7 @@ class PI_DeepONet(nn.Module):
 
 
 
-    def train(self,u1,u2,u3, u_s1, u_s2, u_s3,dataloader1,dataloader2,dataloader3):
+    def train(self,u1,u2,u_s1, u_s2,dataloader1,dataloader2):
         params1 = tuple(model1.parameters())
         params2 = tuple(model2.parameters())
         params3 = tuple(model3.parameters())
@@ -155,29 +155,28 @@ class PI_DeepONet(nn.Module):
         self.optimizer = torch.optim.LBFGS(params, lr=1,history_size=20, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-64, tolerance_change=1e-64)
     
-        pbar = tqdm(range(50), desc='description')
+        pbar = tqdm(range(10), desc='description')
     
        
         for _ in pbar:
            
             
-            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b),(x_bc4, t_bc4,s_bc4) in zip(dataloader1, dataloader2,dataloader3):
+            for (x_i, t_i,outputs_i),(x_b, t_b, outputs_b) in zip(dataloader1, dataloader2,dataloader3):
                 def closure():
                     global pde_loss, bc_loss,label_loss,brunk_net_loss
                     self.optimizer.zero_grad()
                     bc_loss= self.loss_bcs(u1,u2,u3,u_s1,u_s2,u_s3,x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u3,u_s1,u_s2,u_s3,x_b, t_b, outputs_b)
-                    label_loss=self.loss_bcs(u1,u2,u3,u_s1,u_s2,u_s3,x_bc4, t_bc4,s_bc4)
-                    _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
-                    loss =100*pde_loss+100*bc_loss+5000*label_loss+100*brunk_net_loss
+                    # _,brunk_net_loss= model.brunk_net(u1, u2, u3, u_s1, u_s2, u_s3)
+                    loss =100*pde_loss+100*bc_loss
                     loss.backward()
                     return loss
 
             # if _ % 5 == 0 and _ < 50:
-                # model1.update_grid_from_samples(u_i1)
-                # model1.update_grid_from_samples(u_i2)
-                # model1.update_grid_from_samples(u_b1)
-                # model1.update_grid_from_samples(u_b2)
+                model1.update_grid_from_samples(u1)
+                model2.update_grid_from_samples(u2)
+                # model4.update_grid_from_samples(u_b1)
+                # model5.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
        
            
@@ -213,19 +212,18 @@ def min_max_normalize(x, min_val, max_val):
 # Geneate training data corresponding to one input sample
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
-    call,delta_T,delta_S= calculate_V(T, r, v, M, K)
-    call = np.asarray(call)
-    s_bcs4 = call[idx[:, 1], idx[:, 0]]
-    s_bc4 = s_bcs4.reshape(-1, 1)
-    x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
-    t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
+    # idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
+    # call,delta_T,delta_S= calculate_V(T, r, v, M, K)
+    # call = np.asarray(call)
+    # s_bcs4 = call[idx[:, 1], idx[:, 0]]
+    # s_bc4 = s_bcs4.reshape(-1, 1)
+    # x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
+    # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    # x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
@@ -298,26 +296,26 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     u_s2=s_bc22
 
 
-    x_bc33 = min_max_normalize(x_bc3, x_bcs_min_value, x_bcs_max_value)
-    x_bc33 = x_bc33.__array__()
-    x_bc33 = torch.tensor(x_bc33)
-    t_bc33= min_max_normalize(t_bc3, t_bcs_min_value, t_bcs_max_value)
-    t_bc33 = t_bc33.__array__()
-    t_bc33= torch.tensor(t_bc33)
-    s_bc33 = min_max_normalize(s_bc3, s_bcs_min_value, s_bcs_max_value)
-    s_bc33 = s_bc33.__array__()
-    s_bc33 = torch.tensor(s_bc33)
-    u_3 = torch.cat((x_bc33, t_bc33), dim=1)
-    u_s3=s_bc33
+    # x_bc33 = min_max_normalize(x_bc3, x_bcs_min_value, x_bcs_max_value)
+    # x_bc33 = x_bc33.__array__()
+    # x_bc33 = torch.tensor(x_bc33)
+    # t_bc33= min_max_normalize(t_bc3, t_bcs_min_value, t_bcs_max_value)
+    # t_bc33 = t_bc33.__array__()
+    # t_bc33= torch.tensor(t_bc33)
+    # s_bc33 = min_max_normalize(s_bc3, s_bcs_min_value, s_bcs_max_value)
+    # s_bc33 = s_bc33.__array__()
+    # s_bc33 = torch.tensor(s_bc33)
+    # u_3 = torch.cat((x_bc33, t_bc33), dim=1)
+    # u_s3=s_bc33
 
-    x_bc4= min_max_normalize(x_bc4,x_bcs_min_value, x_bcs_max_value)
-    x_bc4 = x_bc4.__array__()
-    x_bc4= torch.tensor(x_bc4)
-    t_bc4 = t_bc4.__array__()
-    t_bc4= torch.tensor(t_bc4)
-    s_bc4= min_max_normalize(s_bc4,s_bcs_min_value, s_bcs_max_value)
-    s_bc4= s_bc4.__array__()
-    s_bc4 = torch.tensor(s_bc4)
+    # x_bc4= min_max_normalize(x_bc4,x_bcs_min_value, x_bcs_max_value)
+    # x_bc4 = x_bc4.__array__()
+    # x_bc4= torch.tensor(x_bc4)
+    # t_bc4 = t_bc4.__array__()
+    # t_bc4= torch.tensor(t_bc4)
+    # s_bc4= min_max_normalize(s_bc4,s_bcs_min_value, s_bcs_max_value)
+    # s_bc4= s_bc4.__array__()
+    # s_bc4 = torch.tensor(s_bc4)
 
 
     
@@ -326,7 +324,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
 
 
 
-    return u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b, x_bc4 ,t_bc4, s_bc4, \
+    return u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i,t_i,outputs_i,x_b,t_b,outputs_b,\
            s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value
 
 
@@ -340,7 +338,7 @@ M = 5000
 r =0.025610
 v=0.165856529
 T=1
-u_1,u_2,u_3,u_s1,u_s2,u_s3,x_i, t_i,outputs_i, x_b, t_b, outputs_b,x_bc4 ,t_bc4, s_bc4 ,\
+u_1,u_2,u_s1,u_s2,x_i, t_i,outputs_i, x_b, t_b, outputs_b ,\
          s_bcs_min_value, s_bcs_max_value,x_bcs_min_value, x_bcs_max_value,t_bcs_min_value, t_bcs_max_value\
             =generate_one_training_data(key,P,Q,K,M,r,v,T)
 u_1=u_1.float().to(device)
@@ -356,37 +354,37 @@ outputs_i=outputs_i.float()
 x_b=x_b.float()
 t_b=t_b.float()
 outputs_b=outputs_b.float()
-x_bc4=x_bc4.float()
-t_bc4=t_bc4.float()
-s_bc4=s_bc4.float()
+# x_bc4=x_bc4.float()
+# t_bc4=t_bc4.float()
+# s_bc4=s_bc4.float()
 x_i = x_i.reshape(-1,).to(device)
 t_i = t_i.reshape(-1,).to(device)
 outputs_i = outputs_i.reshape(-1,).to(device)
 x_b = x_b.reshape(-1,).to(device)
 t_b = t_b.reshape(-1,).to(device)
 outputs_b = outputs_b.reshape(-1,).to(device)
-x_bc4 = x_bc4.reshape(-1,).to(device)
-t_bc4 = t_bc4.reshape(-1,).to(device)
-s_bc4 = s_bc4.reshape(-1,).to(device)
+# x_bc4 = x_bc4.reshape(-1,).to(device)
+# t_bc4 = t_bc4.reshape(-1,).to(device)
+# s_bc4 = s_bc4.reshape(-1,).to(device)
 dataset1 = TensorDataset(x_i,t_i,outputs_i)
 dataset2 = TensorDataset(x_b,t_b,outputs_b)
-dataset3 = TensorDataset(x_bc4,t_bc4,s_bc4)
+# dataset3 = TensorDataset(x_bc4,t_bc4,s_bc4)
 batch_size1= 50
 batch_size2= 50
 dataloader1 = DataLoader(dataset1, batch_size=batch_size1, shuffle=True)
 dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
-dataloader3 = DataLoader(dataset3, batch_size=batch_size2, shuffle=True)
+# dataloader3 = DataLoader(dataset3, batch_size=batch_size2, shuffle=True)
 
 
 
 model1 =KAN([2, 2, 1], base_activation=nn.Identity)
 model2 = KAN([2,2,1], base_activation=nn.Identity)
-model3 = KAN([2,2,1], base_activation=nn.Identity)
+# model3 = KAN([2,2,1], base_activation=nn.Identity)
 model4 = KAN([100,2,2], base_activation=nn.Identity)
 model5 = KAN([2,2,2], base_activation=nn.Identity)
-model= PI_DeepONet(model1,model2,model3,model4,model5)
+model= PI_DeepONet(model1,model2,model4,model5)
 model.to(device)
-model.train(u_1,u_2,u_3,u_s1,u_s2,u_s3,dataloader1,dataloader2,dataloader3)
+model.train(u_1,u_2,u_s1,u_s2,dataloader1,dataloader2)
 data=pd.read_csv('data.csv')
 x_test=data.iloc[:,1]
 t_test=data.iloc[:,2]
@@ -398,7 +396,7 @@ t_test=t_test.unsqueeze(1).to(device)
 x_test=min_max_normalize(x_test,x_bcs_min_value, x_bcs_max_value)
 t_test=min_max_normalize(t_test,t_bcs_min_value,t_bcs_max_value)
 
-s_pred = model.operator_net(u_1,u_2,u_3, u_s1, u_s2, u_s3,x_test,t_test)
+s_pred = model.operator_net(u_1,u_2,u_s1, u_s2, x_test,t_test)
 s_pred=s_pred*s_bcs_max_value
 s_true=data.iloc[:,3]
 s_true=torch.tensor(s_true).to(device)
