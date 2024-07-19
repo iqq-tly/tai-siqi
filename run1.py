@@ -115,7 +115,7 @@ class PI_DeepONet(nn.Module):
         s_t =jacrev(self.operator_net,argnums=5)(u1,u2,u_s1,u_s2,x,t).sum(dim=0).to(device)
         member1 = torch.tensor(0.5, device='cuda')
         member2 = torch.tensor(0.165856529, device='cuda')
-        member3 = torch.tensor(0.025610, device='cuda')
+        member3 = torch.tensor(0.01984, device='cuda')
         res =s_t-(member1)*(member2**2)*(x**2)*s_xx-member3*x*s_x+member3*s
         return res
         # r =0.025610
