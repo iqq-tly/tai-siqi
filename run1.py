@@ -387,8 +387,8 @@ dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
 
 
-model1 =KAN([2,2,2], base_activation=nn.Identity)
-model2 = KAN([2,2,2], base_activation=nn.Identity)
+model1 =KAN([2,2,1], base_activation=nn.Identity)
+model2 = KAN([2,2,1], base_activation=nn.Identity)
 # model3 = KAN([2,1], base_activation=nn.Identity)
 model4 = KAN([200,2,2], base_activation=nn.Identity)
 model5 = KAN([2,2,2], base_activation=nn.Identity)
