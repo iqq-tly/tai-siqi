@@ -229,7 +229,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     
     gp_params = (1.0,0.2)
     jitter = 1e-10
-    X = np.linspace(0,3*K,P//3)[:,None]
+    X = np.linspace(0,7.233,P//3)[:,None]
     K = RBF(X, X, gp_params)
     L = np.linalg.cholesky(K + jitter*np.eye(P//3))
     gp_sample = np.dot(L, random.normal(subkeys1[0], (P//3,)))
