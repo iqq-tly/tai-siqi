@@ -208,6 +208,12 @@ def min_max_normalize(x, min_val, max_val):
     normalized_x = (x - min_val) / (max_val - min_val)
     return normalized_x
 # Geneate training data corresponding to one input sample
+def RBF(x1, x2, params):
+    output_scale, lengthscales = params
+    diffs = np.expand_dims(x1 / lengthscales, 1) - \
+            np.expand_dims(x2 / lengthscales, 0)
+    r2 = np.sum(diffs**2, axis=2)
+    return output_scale * np.exp(-0.5 * r2)
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
     # idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
