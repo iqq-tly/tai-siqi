@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 import jax
 import numpy as np
-from jax import random, jit,jnp
+from jax import random, jit
+import jax.numpy as jnp
 import sklearn
 from sklearn.preprocessing import MinMaxScaler
 import itertools
