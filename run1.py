@@ -217,13 +217,13 @@ def RBF(x1, x2, params):
     return output_scale * np.exp(-0.5 * r2)
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
     subkeys = random.split(key, 10)
-    idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
-    call,delta_T,delta_S= calculate_V(T, r, v, M, K)
-    call = np.asarray(call)
-    s_bcs4 = call[idx[:, 1], idx[:, 0]]
-    s_bc4 = s_bcs4.reshape(-1, 1)
-    x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
-    t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
+    # idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
+    # call,delta_T,delta_S= calculate_V(T, r, v, M, K)
+    # call = np.asarray(call)
+    # s_bcs4 = call[idx[:, 1], idx[:, 0]]
+    # s_bc4 = s_bcs4.reshape(-1, 1)
+    # x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
+    # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
     gp_params = (1.0,0.2)
     jitter = 1e-10
     X = np.linspace(0,3*K,P//3)[:,None]
