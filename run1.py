@@ -196,9 +196,9 @@ class PI_DeepONet(nn.Module):
 
 # Deinfe initial and boundary conditions for advection equation
 def f1(x,t,k):
-  return np.where(t==0,np.maximum(x-k,0),0)
+  return np.where(t==0,np.maximum(x-2.411,0),0)
 def f2(x,k):
-  return np.where(x ==3*k, x-k, 10)
+  return np.where(x ==7.233, x-k, 10)
 def f3(x):
   return np.where(x==0,0,0)
 
