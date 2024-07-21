@@ -227,23 +227,23 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
 
     
-    # gp_params = (1.0,0.2)
-    # jitter = 1e-10
-    # X = np.linspace(0,7.233,P//3)[:,None]
-    # K = RBF(X, X, gp_params)
-    # L = np.linalg.cholesky(K + jitter*np.eye(P//3))
-    # gp_sample = np.dot(L, random.normal(subkeys1[0], (P//3,)))
-    # f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
+    gp_params = (1.0,0.2)
+    jitter = 1e-10
+    X = np.linspace(0,7.233,P//3)[:,None]
+    K = RBF(X, X, gp_params)
+    L = np.linalg.cholesky(K + jitter*np.eye(P//3))
+    gp_sample = np.dot(L, random.normal(subkeys1[0], (P//3,)))
+    f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
-    # # Create grid
-    # x= np.linspace(0,7.233,P//3)
-    # t = np.linspace(0,365,P//3)
-    # x_bc4= f_fn(x)
-    # x_bc4 = x.reshape(-1, 1)
-    # t_bc4= f_fn(t)
-    # t_bc4=t_bc4.reshape(-1, 1)
-    # x_bc4 = jnp.array(x_bc4)
-    # t_bc4=jnp.array(t_bc4)
+    # Create grid
+    x= np.linspace(0,7.233,P//3)
+    t = np.linspace(0,365,P//3)
+    x_bc4= f_fn(x)
+    x_bc4 = x.reshape(-1, 1)
+    t_bc4= f_fn(t)
+    t_bc4=t_bc4.reshape(-1, 1)
+    x_bc4 = jnp.array(x_bc4)
+    t_bc4=jnp.array(t_bc4)
     # print(type(x_bc4))
     # print(t_bc4.shape)
     np_K=K*(np.ones((P // 3, 1)))
