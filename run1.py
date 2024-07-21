@@ -244,7 +244,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bc4=t_bc4.reshape(-1, 1)
     x_bc4 = jnp.array(x_bc4)
     t_bc4=jnp.array(t_bc4)
-    print(x_bc4.shape)
+    print(type(x_bc4))
     print(t_bc4.shape)
     np_K=K*(np.ones((P // 3, 1)))
 
