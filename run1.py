@@ -237,6 +237,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     x = np.linspace(0,3*K, P//3)
     t = np.linspace(0, 365, P//3)
     x_bc4= f_fn(x)
+    print( x_bc4.shape)
     t_bc4= f_fn(t)
     np_K=K*(np.ones((P // 3, 1)))
 
