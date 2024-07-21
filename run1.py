@@ -172,13 +172,12 @@ class PI_DeepONet(nn.Module):
                     return loss
 
             # if _ % 5 == 0 and _ < 50:
-                # model1.update_grid_from_samples(u1)
-                # model2.update_grid_from_samples(u2)
-                # # model4.update_grid_from_samples(u_b1)
-                # # model5.update_grid_from_samples(u_b2)
+                model1.update_grid_from_samples(u1)
+                model2.update_grid_from_samples(u2)
+                # model4.update_grid_from_samples(u_b1)
+                # model5.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
        
-           *
 
             if _ % 1 == 0:
                 pbar.set_description("pde loss: %.2e | bc loss: %.2e" % (
