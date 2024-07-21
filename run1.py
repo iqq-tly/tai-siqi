@@ -217,12 +217,28 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # s_bc4 = s_bcs4.reshape(-1, 1)
     # x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
     # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
+      # Generate a GP sample
+    N = 512
+    gp_params = (1.0, length_scale)
+    jitter = 1e-10
+    X = np.linspace(xmin, xmax, N)[:,None]
+    K = RBF(X, X, gp_params)
+    L = np.linalg.cholesky(K + jitter*np.eye(N))
+    gp_sample = np.dot(L, random.normal(subkeys[0], (N,)))
+    # Create a callable interpolation function  
+    f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
+
+    # Create grid
+    x = np.linspace(0,3*K, p//3)
+    t = np.linspace(0, 365, p//3)
+    x_bc4= f_fn(x)
+    t_bc4= f_fn(t)
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[1], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    x_bc4= random.uniform(subkeys[7], shape=(P // 3, 1), minval=0, maxval=3* K)
+    # x_bc4= random.uniform(subkeys[7], shape=(P // 3, 1), minval=0, maxval=3* K)
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
@@ -233,7 +249,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bc1 = np.zeros((P // 3, 1))
     t_bc2 = random.uniform(subkeys[3], shape=(P // 3, 1), minval=0, maxval=365)
     t_bc3 = random.uniform(subkeys[4], shape=(P // 3, 1), minval=0, maxval=365)
-    t_bc4 = random.uniform(subkeys[8], shape=(P // 3, 1), minval=0, maxval=365)
+    # t_bc4 = random.uniform(subkeys[8], shape=(P // 3, 1), minval=0, maxval=365)
     t_bcs = np.vstack([t_bc1, t_bc2,t_bc3])
     t_bcs_min_value = np.min(t_bcs)
     t_bcs_max_value = np.max(t_bcs)
