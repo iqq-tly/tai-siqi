@@ -264,7 +264,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bc1 = np.zeros((P // 3, 1))
     t_bc2 = random.uniform(subkeys[3], shape=(P // 3, 1), minval=0, maxval=365)
     t_bc3 = random.uniform(subkeys[4], shape=(P // 3, 1), minval=0, maxval=365)
-    t_bc4 = random.uniform(subkeys[8], shape=(P // 3, 1), minval=0, maxval=365)
+    # t_bc4 = random.uniform(subkeys[8], shape=(P // 3, 1), minval=0, maxval=365)
     t_bcs = np.vstack([t_bc1, t_bc2,t_bc3])
     t_bcs_min_value = np.min(t_bcs)
     t_bcs_max_value = np.max(t_bcs)
