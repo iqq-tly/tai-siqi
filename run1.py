@@ -230,13 +230,12 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     K = RBF(X, X, gp_params)
     L = np.linalg.cholesky(K + jitter*np.eye(P//3))
     gp_sample = np.dot(L, random.normal(subkeys[0], (P//3,)))
-    # Create a callable interpolation function  
     f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
     # Create grid
     x = np.linspace(0,3*K, P//3)
-    t = np.linspace(0, 365, P//3)
-    print(x)
+    t = np.linspace(0,365,P//3)
+    print(x.shape)
     x_bc4= f_fn(x)
     print( x_bc4.shape)
     t_bc4= f_fn(t)
