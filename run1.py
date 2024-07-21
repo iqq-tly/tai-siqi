@@ -167,7 +167,7 @@ class PI_DeepONet(nn.Module):
                     bc_loss= self.loss_bcs(u1,u2,u_s1,u_s2,x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b,t_b,outputs_b)
                     # _,brunk_net_loss= model.brunk_net(u1, u2,u_s1, u_s2)
-                    loss =pde_loss+100*bc_loss
+                    loss =pde_loss+10*bc_loss
                     loss.backward()
                     return loss
 
@@ -178,7 +178,7 @@ class PI_DeepONet(nn.Module):
                 # # model5.update_grid_from_samples(u_b2)
                 self.optimizer.step(closure)
        
-           
+           *
 
             if _ % 1 == 0:
                 pbar.set_description("pde loss: %.2e | bc loss: %.2e" % (
