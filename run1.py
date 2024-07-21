@@ -249,11 +249,9 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=7.233)
-    print(type(x_bc1))
     x_bc2 = 7.233* (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
     # x_bc4= random.uniform(subkeys[7], shape=(P // 3, 1), minval=0, maxval=3* K)
-    print(x_bc4.shape)
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
@@ -289,6 +287,10 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bcs_max_value = np.max(s_train)
     s_train= min_max_normalize(s_train,s_bcs_min_value, s_bcs_max_value)
     s_train= s_train.__array__()
+    print(s_bc1.shape)
+    print(s_bc2.shape)
+    print(s_bc3.shape)
+    
     print(s_train.shape)
     outputs_i= torch.tensor(s_train)
 
