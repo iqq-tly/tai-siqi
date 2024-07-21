@@ -292,7 +292,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
 
     outputs_i= torch.tensor(s_train)
 
-    x_b = random.uniform(subkeys[5], shape=(Q, 1), minval=0, maxval=3*K)
+    x_b = random.uniform(subkeys[5], shape=(Q, 1), minval=0, maxval=7.233)
     t_b = random.uniform(subkeys[6], shape=(Q, 1), minval=0, maxval=365)
     x_b = min_max_normalize(x_b,x_bcs_min_value, x_bcs_max_value)
     t_b= min_max_normalize(t_b,t_bcs_min_value,t_bcs_max_value)
