@@ -223,7 +223,6 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # s_bc4 = s_bcs4.reshape(-1, 1)
     # x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
     # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
-      # Generate a GP sample
     gp_params = (1.0,0.2)
     jitter = 1e-10
     X = np.linspace(0,3*K,P//3)[:,None]
