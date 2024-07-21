@@ -241,7 +241,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bc4=t_bc4.reshape(-1, 1)
     np_K=K*(np.ones((P // 3, 1)))
 
-    x_bc1 = random.uniform(subkeys[1], shape=(P // 3, 1), minval=0, maxval=3* K)
+    x_bc1 = random.uniform(subkeys[1], shape=(P // 3, 1), minval=0, maxval=3*K)
     print(x_bc1.shape)
     x_bc2 = 3 * K * (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
