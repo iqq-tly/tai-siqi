@@ -224,24 +224,26 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # s_bc4 = s_bcs4.reshape(-1, 1)
     # x_bc4 = (idx[:, 0] * delta_S).reshape(-1, 1)
     # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
-    gp_params = (1.0,0.2)
-    jitter = 1e-10
-    X = np.linspace(0,3*K,P//3)[:,None]
-    K = RBF(X, X, gp_params)
-    L = np.linalg.cholesky(K + jitter*np.eye(P//3))
-    gp_sample = np.dot(L, random.normal(subkeys[0], (P//3,)))
-    f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
-    # Create grid
-    x= np.linspace(0,7.233,P//3)
-    t = np.linspace(0,365,P//3)
-    x_bc4= f_fn(x)
-    x_bc4 = x.reshape(-1, 1)
-    t_bc4= f_fn(t)
-    t_bc4=t_bc4.reshape(-1, 1)
-    x_bc4 = jnp.array(x_bc4)
-    print(x_bc4.shape)
-    t_bc4=jnp.array(t_bc4)
+    
+    # gp_params = (1.0,0.2)
+    # jitter = 1e-10
+    # X = np.linspace(0,3*K,P//3)[:,None]
+    # K = RBF(X, X, gp_params)
+    # L = np.linalg.cholesky(K + jitter*np.eye(P//3))
+    # gp_sample = np.dot(L, random.normal(subkeys[0], (P//3,)))
+    # f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
+
+    # # Create grid
+    # x= np.linspace(0,7.233,P//3)
+    # t = np.linspace(0,365,P//3)
+    # x_bc4= f_fn(x)
+    # x_bc4 = x.reshape(-1, 1)
+    # t_bc4= f_fn(t)
+    # t_bc4=t_bc4.reshape(-1, 1)
+    # x_bc4 = jnp.array(x_bc4)
+    # print(x_bc4.shape)
+    # t_bc4=jnp.array(t_bc4)
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=3*K)
