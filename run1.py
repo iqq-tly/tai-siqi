@@ -228,8 +228,8 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     jitter = 1e-10
     X = np.linspace(0,3*K,P//3)[:,None]
     K = RBF(X, X, gp_params)
-    L = np.linalg.cholesky(K + jitter*np.eye(N))
-    gp_sample = np.dot(L, random.normal(subkeys[0], (N,)))
+    L = np.linalg.cholesky(K + jitter*np.eye(P//3))
+    gp_sample = np.dot(L, random.normal(subkeys[0], (P//3,)))
     # Create a callable interpolation function  
     f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
