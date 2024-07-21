@@ -233,13 +233,13 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
     # Create grid
-    x1 = np.linspace(0,7.233,P//3)
+    x= np.linspace(0,7.233,P//3)
     t = np.linspace(0,365,P//3)
-    print(x1.shape)
-    print(t.shape)
-    x_bc4= f_fn(x1)
+    x_bc4= f_fn(x)
+    x_bc4 = x.reshape(-1, 1)
     print( x_bc4.shape)
     t_bc4= f_fn(t)
+    t_bc4=t_bc4.reshape(-1, 1)
     np_K=K*(np.ones((P // 3, 1)))
 
     x_bc1 = random.uniform(subkeys[1], shape=(P // 3, 1), minval=0, maxval=3* K)
