@@ -236,7 +236,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # Create grid
     x = np.linspace(0,3*K, P//3)
     t = np.linspace(0, 365, P//3)
-    print(x.shape)
+    print(x)
     x_bc4= f_fn(x)
     print( x_bc4.shape)
     t_bc4= f_fn(t)
