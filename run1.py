@@ -216,7 +216,7 @@ def RBF(x1, x2, params):
     r2 = np.sum(diffs**2, axis=2)
     return output_scale * np.exp(-0.5 * r2)
 def generate_one_training_data(key,P,Q,K,M,r,v,T):
-    subkeys = random.split(key, 10)
+    subkeys = random.split(key, 5000)
     subkeys1 = random.split(key, 2)
     # idx = random.randint(subkeys[8], (100, 2), 0, max(M, M))
     # call,delta_T,delta_S= calculate_V(T, r, v, M, K)
