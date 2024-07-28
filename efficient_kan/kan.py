@@ -41,7 +41,7 @@ class KANLinear(nn.Module):
         grid_eps=0.02,
         grid_range=[-1, 1],
     ):
-        super(BayesianKANLinear, self).__init__()
+        super(KANLinear, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
         self.grid_size = grid_size
