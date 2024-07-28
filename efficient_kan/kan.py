@@ -3,8 +3,6 @@ import torch
 import torch.nn.functional as F
 import math
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 
 class BayesianLinear(nn.Module):
     def __init__(self, in_features, out_features, prior_mu=0, prior_sigma=1):
