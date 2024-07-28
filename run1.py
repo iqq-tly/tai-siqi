@@ -198,7 +198,7 @@ class PI_DeepONet(nn.Module):
 def f1(x,t,k):
   return np.where(t==0,np.maximum(x-2.411,0),0)
 def f2(x,k):
-  return np.where(x ==4.822, x-2.411, 10)
+  return np.where(x ==7.233, x-2.411, 10)
 def f3(x):
   return np.where(x==0,0,0)
 
@@ -229,14 +229,14 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     
     gp_params = (1.0,0.2)
     jitter = 1e-10
-    X = np.linspace(0,4.822,P//3)[:,None]
+    X = np.linspace(0,7.233,P//3)[:,None]
     K = RBF(X, X, gp_params)
     L = np.linalg.cholesky(K + jitter*np.eye(P//3))
     gp_sample = np.dot(L, random.normal(subkeys1[0], (P//3,)))
     f_fn = lambda x: np.interp(x, X.flatten(), gp_sample)
 
     # Create grid
-    x= np.linspace(0,4.822,P//3)
+    x= np.linspace(0,7.233,P//3)
     t = np.linspace(0,365,P//3)
     x_bc4= f_fn(x)
     x_bc4 = x.reshape(-1, 1)
@@ -248,10 +248,10 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # print(t_bc4.shape)
     np_K=K*(np.ones((P // 3, 1)))
 
-    x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=4.822)
-    x_bc2 = 12.055* (np.ones((P // 3, 1)))
+    x_bc1 = random.uniform(subkeys[2], shape=(P // 3, 1), minval=0, maxval=7.233)
+    x_bc2 = 7.233* (np.ones((P // 3, 1)))
     x_bc3 = np.zeros((P // 3, 1))
-    # x_bc4= random.uniform(subkeys[7], shape=(P // 3, 1), minval=0, maxval=5* K)
+    # x_bc4= random.uniform(subkeys[7], shape=(P // 3, 1), minval=0, maxval53* K)
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
