@@ -168,7 +168,7 @@ class PI_DeepONet(nn.Module):
                     bc_loss= self.loss_bcs(u1,u2,u_s1,u_s2,x_i, t_i,outputs_i)
                     pde_loss=self.loss_res(u1,u2,u_s1,u_s2,x_b,t_b,outputs_b)
                     # _,brunk_net_loss= model.brunk_net(u1, u2,u_s1, u_s2)
-                    loss =pde_loss+100*bc_loss
+                    loss =pde_loss+bc_loss
                     loss.backward()
                     return loss
 
@@ -422,11 +422,11 @@ dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 
 
 
-model1 =KAN([2,2,2,2,1], base_activation=nn.Identity)
-model2 = KAN([2,2,2,2,1], base_activation=nn.Identity)
+model1 =KAN([2,5,5,5,1], base_activation=nn.Identity)
+model2 = KAN([2,5,5,5,1], base_activation=nn.Identity)
 # model3 = KAN([2,2,2,1], base_activation=nn.Identity)
-model4 = KAN([200,2,2,2,2], base_activation=nn.Identity)
-model5 = KAN([2,2,2,2,2], base_activation=nn.Identity)
+model4 = KAN([200,5,5,5,5], base_activation=nn.Identity)
+model5 = KAN([2,5,5,5,5], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model4,model5)
 model.to(device)
 model.train(u_1,u_2,u_s1,u_s2,dataloader1,dataloader2)
