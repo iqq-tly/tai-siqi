@@ -227,7 +227,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     # t_bc4 = (T - idx[:, 1] * delta_T).reshape(-1, 1)
 
     
-    gp_params = (1.0,0.2)
+    gp_params = (1.0,0.1)
     jitter = 1e-10
     X = np.linspace(0,7.233,P//3)[:,None]
     K = RBF(X, X, gp_params)
