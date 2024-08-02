@@ -85,7 +85,8 @@ class PI_DeepONet(nn.Module):
         BC1=self.model1(u1)
         BC2=self.model2(u2)
         # BC3 = self.model3(u3)
-        # print(BC1.shape)
+        print(type(BC1))
+        
         B=BC1*BC2
         # loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
         return B
