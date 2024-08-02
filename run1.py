@@ -86,7 +86,8 @@ class PI_DeepONet(nn.Module):
         BC2=self.model2(u2)
         # BC3 = self.model3(u3)
         # print(type(BC1))
-        B=BC1*BC2
+        # B=BC1*BC2
+        B= torch.cat((BC1,BC2), dim=0)
         # loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
         return B
 
@@ -426,7 +427,7 @@ dataloader2 = DataLoader(dataset2, batch_size=batch_size2, shuffle=True)
 model1 =KAN([2,2,2,2,2,1], base_activation=nn.Identity)
 model2 = KAN([2,2,2,2,2,1], base_activation=nn.Identity)
 # model3 = KAN([2,2,2,1], base_activation=nn.Identity)
-model4 = KAN([200,2,2,2,2], base_activation=nn.Identity)
+model4 = KAN([400,2,2,2,2], base_activation=nn.Identity)
 model5 = KAN([2,2,2,2,2], base_activation=nn.Identity)
 model= PI_DeepONet(model1,model2,model4,model5)
 model.to(device)
