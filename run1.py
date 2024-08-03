@@ -82,6 +82,10 @@ class PI_DeepONet(nn.Module):
         return reshaped_X
     
     def brunk_net(self,u1,u2,u_s1,u_s2):
+        print(u1)
+        print(u_s1)
+        print(u1.shape)
+        print(u_s1.shape)
         BC1=self.model1(u1)
         BC2=self.model2(u2)
         # BC3 = self.model3(u3)
@@ -157,7 +161,7 @@ class PI_DeepONet(nn.Module):
         self.optimizer = torch.optim.LBFGS(params, lr=0.001,history_size=1, line_search_fn="strong_wolfe",
                                tolerance_grad=1e-64, tolerance_change=1e-64)
         # self.optimizer = torch.optim.Adadelta(params, lr=0.005)
-        pbar = tqdm(range(100), desc='description')
+        pbar = tqdm(range(10), desc='description')
     
        
         for _ in pbar:
