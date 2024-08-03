@@ -109,6 +109,8 @@ class PI_DeepONet(nn.Module):
         B = self.model4(B1)
         y = self.helper(x, t)
         T = self.model5(y)
+        print('B.shape',B.shape)
+        print('T.shape',T.shape)
         outputs =torch.sum(B * T, dim=1)
         return outputs
 
