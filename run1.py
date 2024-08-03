@@ -80,28 +80,24 @@ class PI_DeepONet(nn.Module):
     def reshape(self,X):
         reshaped_X = X.reshape(-1,)
         return reshaped_X
-    
-    def brunk_net(self,u1,u2,u_s1,u_s2):
-        print(u1)
-        print(u_s1)
-        print(u1.shape)
-        print(u_s1.shape)
-        BC1=self.model1(u1)
-        BC2=self.model2(u2)
-        # BC3 = self.model3(u3)
-        # print(type(BC1))
-        # B=BC1*BC2
-        B= torch.cat((BC1,BC2), dim=0)
-        # loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
-        return B
-
-
     def helper(self,X, Y):
         reshaped_X=self.reshape(X)
         reshaped_Y=self.reshape(Y)
         stacked_tensor = torch.stack([reshaped_X, reshaped_Y])
         permuted_tensor = stacked_tensor.permute(1, 0)
         return permuted_tensor
+    
+    def brunk_net(self,u1,u2,u_s1,u_s2):
+        u11= self.helper(u1,u_s1)
+        u22=self.helper(u2,u_s2)
+        BC1=self.model1(u11)
+        BC2=self.model2(u22)
+        # BC3 = self.model3(u3)
+        # print(type(BC1))
+        B=BC1*BC2
+        # B= torch.cat((BC1,BC2), dim=0)
+        # loss=torch.mean((BC1.flatten() -u_s1) ** 2+(BC2.flatten() -u_s2) ** 2+(BC3.flatten() -u_s3) ** 2)
+        return B
 
     # Define DeepONet architecture
     def operator_net(self,u1,u2,u_s1,u_s2,x,t):
