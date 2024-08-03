@@ -88,8 +88,10 @@ class PI_DeepONet(nn.Module):
         return permuted_tensor
     
     def brunk_net(self,u1,u2,u_s1,u_s2):
-        u11= self.helper(u1,u_s1)
-        u22=self.helper(u2,u_s2)
+        u_s1=u_s1.unsqueeze(1)
+        u11= torch.cat((u1,u_s1), dim=1)
+        u_s2=u_s2.unsqueeze(1)
+        u22= torch.cat((u2,u_s2), dim=1)
         BC1=self.model1(u11)
         BC2=self.model2(u22)
         # BC3 = self.model3(u3)
