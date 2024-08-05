@@ -316,7 +316,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     x_bc11=x_bc11.__array__()
     x_bc11= torch.tensor(x_bc11)
     # t_bc11 = min_max_normalize(t_bc1, t_bcs_min_value, t_bcs_max_value)
-     t_bc11 = t_bc1
+    t_bc11 = t_bc1
     t_bc11 = t_bc11.__array__()
     t_bc11 = torch.tensor(t_bc11)
     # s_bc11 = min_max_normalize(s_bc4, s_bcs_min_value, s_bcs_max_value)
