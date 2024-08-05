@@ -261,7 +261,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     x_bcs = np.vstack([x_bc1, x_bc2,x_bc3])
     x_bcs_min_value = np.min(x_bcs)
     x_bcs_max_value = np.max(x_bcs)
-    # x_bcs=min_max_normalize(x_bcs, x_bcs_min_value, x_bcs_max_value)
+    x_bcs=min_max_normalize(x_bcs, x_bcs_min_value, x_bcs_max_value)
     x_bcs= x_bcs.__array__()
     x_i = torch.tensor(x_bcs)
 
@@ -272,7 +272,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bcs = np.vstack([t_bc1, t_bc2,t_bc3])
     t_bcs_min_value = np.min(t_bcs)
     t_bcs_max_value = np.max(t_bcs)
-    # t_bcs= min_max_normalize(t_bcs, t_bcs_min_value,t_bcs_max_value)
+    t_bcs= min_max_normalize(t_bcs, t_bcs_min_value,t_bcs_max_value)
     # t_bcs = np.vstack([t_bcs,t_bc4])
     t_bcs = t_bcs.__array__()
     t_i = torch.tensor(t_bcs)
@@ -291,15 +291,15 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_train= np.vstack([s_bc1, s_bc2,s_bc3])
     s_bcs_min_value = np.min(s_train)
     s_bcs_max_value = np.max(s_train)
-    # s_train= min_max_normalize(s_train,s_bcs_min_value, s_bcs_max_value)
+    s_train= min_max_normalize(s_train,s_bcs_min_value, s_bcs_max_value)
     s_train= s_train.__array__()
 
     outputs_i= torch.tensor(s_train)
 
     x_b = random.uniform(subkeys[5], shape=(Q, 1), minval=0, maxval=7.233)
     t_b = random.uniform(subkeys[6], shape=(Q, 1), minval=0, maxval=365)
-    # x_b = min_max_normalize(x_b,x_bcs_min_value, x_bcs_max_value)
-    # t_b= min_max_normalize(t_b,t_bcs_min_value,t_bcs_max_value)
+    x_b = min_max_normalize(x_b,x_bcs_min_value, x_bcs_max_value)
+    t_b= min_max_normalize(t_b,t_bcs_min_value,t_bcs_max_value)
     x_b = x_b.__array__()
     x_b= torch.tensor(x_b)
     t_b = t_b.__array__()
@@ -311,16 +311,13 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc4 =np.array(list(s_bc4))
     s_bc4 =s_bc4.reshape(-1,1)
     
-    # x_bc11=min_max_normalize(x_bc4, x_bcs_min_value, x_bcs_max_value)
-    x_bc11=x_bc4
+    x_bc11=min_max_normalize(x_bc4, x_bcs_min_value, x_bcs_max_value)
     x_bc11=x_bc11.__array__()
     x_bc11= torch.tensor(x_bc11)
-    # t_bc11 = min_max_normalize(t_bc1, t_bcs_min_value, t_bcs_max_value)
-    t_bc11 = t_bc1
+    t_bc11 = min_max_normalize(t_bc1, t_bcs_min_value, t_bcs_max_value)
     t_bc11 = t_bc11.__array__()
     t_bc11 = torch.tensor(t_bc11)
-    # s_bc11 = min_max_normalize(s_bc4, s_bcs_min_value, s_bcs_max_value)
-    s_bc11= s_bc4
+    s_bc11 = min_max_normalize(s_bc4, s_bcs_min_value, s_bcs_max_value)
     s_bc11= s_bc11.__array__()
     s_bc11 = torch.tensor(s_bc11)
     u_1= torch.cat((x_bc11,t_bc11), dim=1)  # shape: (4, 2)
@@ -329,17 +326,14 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     s_bc5 = f2(x_bc2,np_K)
     s_bc5 = np.array(list(s_bc5))
     s_bc5 = s_bc5.reshape(-1, 1)
-
-    # x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
-    x_bc22 = x_bc2
+    
+    x_bc22 = min_max_normalize(x_bc2, x_bcs_min_value, x_bcs_max_value)
     x_bc22 = x_bc22.__array__()
     x_bc22 = torch.tensor(x_bc22)
-    # t_bc22 = min_max_normalize(t_bc4, t_bcs_min_value, t_bcs_max_value)
-    t_bc22 = t_bc4
+    t_bc22 = min_max_normalize(t_bc4, t_bcs_min_value, t_bcs_max_value)
     t_bc22 = t_bc22.__array__()
     t_bc22 = torch.tensor(t_bc22)
-    # s_bc22 = min_max_normalize(s_bc5, s_bcs_min_value, s_bcs_max_value
-    s_bc22 = s_bc5
+    s_bc22 = min_max_normalize(s_bc5, s_bcs_min_value, s_bcs_max_value
     s_bc22 = s_bc22.__array__()
     s_bc22 = torch.tensor(s_bc22)
     u_2 = torch.cat((x_bc22, t_bc22), dim=1)
@@ -446,11 +440,11 @@ x_test=x_test.unsqueeze(1).to(device)
 t_test=torch.tensor(t_test).float()
 t_test=t_test.unsqueeze(1).to(device)
 
-# x_test=min_max_normalize(x_test,x_bcs_min_value, x_bcs_max_value)
-# t_test=min_max_normalize(t_test,t_bcs_min_value,t_bcs_max_value)
+x_test=min_max_normalize(x_test,x_bcs_min_value, x_bcs_max_value)
+t_test=min_max_normalize(t_test,t_bcs_min_value,t_bcs_max_value)
 
 s_pred = model.operator_net(u_1,u_2,u_s1, u_s2, x_test,t_test)
-# s_pred=s_pred*s_bcs_max_value
+s_pred=s_pred*s_bcs_max_value
 s_true=data.iloc[:,3]
 s_true=torch.tensor(s_true).to(device)
 error_s =(s_pred- s_true)/s_true
