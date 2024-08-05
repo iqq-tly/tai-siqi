@@ -333,7 +333,7 @@ def generate_one_training_data(key,P,Q,K,M,r,v,T):
     t_bc22 = min_max_normalize(t_bc4, t_bcs_min_value, t_bcs_max_value)
     t_bc22 = t_bc22.__array__()
     t_bc22 = torch.tensor(t_bc22)
-    s_bc22 = min_max_normalize(s_bc5, s_bcs_min_value, s_bcs_max_value
+    s_bc22 = min_max_normalize(s_bc5, s_bcs_min_value, s_bcs_max_value)
     s_bc22 = s_bc22.__array__()
     s_bc22 = torch.tensor(s_bc22)
     u_2 = torch.cat((x_bc22, t_bc22), dim=1)
